@@ -1,0 +1,36 @@
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb}
+
+%SetFonts
+
+%SetFonts
+
+
+\title{Unity Binned Prior}
+\author{Alex Kim}
+%\date{}							% Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+
+The DESI plus SN results have folks in a flurry.  Talking with DESI and David it is clear that DESI is incorporating Union3
+into their analyses incorrectly.  They take Union3 results as data, interpret the covariance matrix as a Gaussian uncertainty,
+and include them in a larger likelihood.  The Unity ``Binned'' model distance modulus
+is the sum of distance modulus for $\Lambda$CDM with $\Omega_M=0.3$ and a second-order spline defined be nodes $n$ at set of redshift values $z$.  The nodes have a uniform prior.  David provides the posterior of the parameters as
+$\mu_{\Lambda CDM}(z) + n$ and the  Hessian of the $n$ posterior.  It is of interest to explore how misapplication
+of Union3 could affect DESI fits.
+
+DESI uses the posterior to fit a $w_0$--$w_a$ cosmology model, which is not a subset of the Unity ``Binned'' model.  Nevertheless,
+the ``Binned'' model can come close by fixing the values at the modes to match those of the $w_0$--$w_a$  model and swallowing the
+inconsistencies between the physics and spline values between the nodes.  Conversely, a large volume of the ``Binned'' model
+has no $w_0$--$w_a$ cosmology correspondence.
+
+The objective is to see how the ``Binned'' prior maps onto $w_0$--$w_a$.  This is acc
+
+\end{document}  
