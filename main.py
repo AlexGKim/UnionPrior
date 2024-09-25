@@ -45,13 +45,16 @@ def pdf():
 				J = J_nodes(W)
 				ans[i,j,k] = jnp.sqrt(jnp.linalg.det(jnp.dot(J.T,J)))
 
-	fig, ax = plt.subplots(3,3)
+	fig, axs = plt.subplots(3,3,figsize=(12,10))
+
 	for Om0s_index, ax in enumerate(axs.flat):
-		im = ax.imshow(ans[Om0s_index,:,:],origin='upper', extent=[w0s[0], w0s[-1], was[0], was[-1]])
-		ax.set_title(r"$w_0$-$w_a$ $\Omega_M={}$".format(Om0s[Om0s_index]))
+		im = ax.imshow(ans[Om0s_index,:,:],origin='upper', extent=[w0s[0], w0s[-1], was[0], was[-1]] )
+		ax.set_title("$\Omega_M={:7.5f}$".format(Om0s[Om0s_index]))
 		ax.set_xlabel(r"$w_0$")
 		ax.set_ylabel(r"$w_a$")
 		fig.colorbar(im, ax=ax)
+
+	fig.tight_layout()	
 
 	plt.show()
 
