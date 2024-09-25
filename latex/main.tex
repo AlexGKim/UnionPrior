@@ -25,7 +25,7 @@ of Union3 could affect  DESI $w_0$--$w_a$  fits.
 
 In the Unity ``Binned'' model, the distance modulus model function
 is the sum of the distance modulus for $\Omega_M=0.3$  $\Lambda$CDM plus a second-order spline specified by node values
-at a fixed set of redshifts.  The results of the fit are provided by David as as
+at a fixed set of redshifts.  The results of the fit are provided by David as
 $\mu_{\Lambda \text{CDM}}(z;\Omega_M=0.3) + n$ and the  Hessian of the $n$ posterior,
 where $z$ are the fixed redshifts and $n$ the node-value parameters.
 DESI take the Union ``Binned"-model parameter posterior output as data, interpret the covariance matrix as a Gaussian uncertainty,
@@ -33,13 +33,13 @@ and include them in a larger likelihood.
 
 DESI uses the posterior to fit a $w_0$--$w_a$ cosmology model, which is not embedded in the Unity ``Binned'' model.  Nevertheless,
 the ``Binned'' model can come close by fixing the values at the modes to match those of the $w_0$--$w_a$  model and swallowing the
-inconsistencies between the physics and spline values between the nodes.  For the purposes of this work, I consider
-as the  $w_0$--$w_a$ model  the subspace
+inconsistencies between the physics and spline predictions between the nodes.  For the purposes of this work, I consider
+as an alternative  $w_0$--$w_a$ model  the subspace
 of the ``Binned'' model that have $\mu$ values at the nodes in the space  covered by the true $w_0$--$w_a$
-model.  The transformation between $\theta=\{\Omega_M, w_0, w_a\}$ and $n$ is given by
+model.  The transformation between the subspace parameters $\theta=\{\Omega_M, w_0, w_a\}$ and its $n$ parameters is given by
 \begin{align}
-	n_i &= f(\Omega_M, w_0, w_a; z_i) \\
-	& \equiv \mu_{w_0 w_a \text{CDM}}(z_i;\Omega_M, w_0, w_a)  - \mu_{\Lambda \text{CDM}}(z_i;\Omega_M=0.3) 
+	n &= f(\Omega_M, w_0, w_a; z) \\
+	& \equiv \mu_{w_0 w_a \text{CDM}}(z;\Omega_M, w_0, w_a)  - \mu_{\Lambda \text{CDM}}(z;\Omega_M=0.3) 
 \end{align}
 
 The prior used in the Union3 analysis is inconsistent with that used by DESI.  Union3 takes a uniform prior for its node values whereas
@@ -51,7 +51,7 @@ p(\Omega_M, w_0,w_a) \propto \sqrt{\det{\left(J^T J\right)}},
 where $J$ is the Jacobian matrix of $f$
 and $J^TJ$ is the Gram matrix.
 
-The Union3 prior  (up to a normalization factor)  in $w_0$--$w_a$  for a grid of values of $\Omega_M$
+The values $\sqrt{\det{\left(J^T J\right)}}$,  i.e.\ the Union3 prior for $w_0$--$w_a$ up to a normalization factor,  for a grid of values of $\Omega_M$
 given the flat node-value prior is plotted in Figure~\ref{fig:priors}. 
 The prior favors small $w_0$ and large $w_a$.  $\Lambda$CDM lies in a disfavored region.
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
@@ -61,5 +61,6 @@ The prior favors small $w_0$ and large $w_a$.  $\Lambda$CDM lies in a disfavored
    Values are $\sqrt{\det{\left(J^T J\right)}}$.}
    \label{fig:priors}
 \end{figure}
+In order for DESI to properly incorporate the Union3 results, the posterior should be reweighted by the inverse of the above prior.
 
 \end{document}  
