@@ -18,9 +18,9 @@ jax.config.update("jax_enable_x64", True)
 def pdf():
 	zs = numpy.concatenate([numpy.arange(0.05,0.8,0.05),numpy.arange(0.8,1.21,0.1)])
 	aas = 1/(1+zs)
-	w0s = numpy.linspace(-1-2*0.11, 4*0.11,5)
-	was =  numpy.linspace(0-2*0.37, 4*0.37,5)
-	Om0s = numpy.linspace(0.3-.05, 0.3+.1,5)
+	w0s = numpy.linspace(-1-2*0.11, 4*0.11,9)
+	was =  numpy.linspace(0-2*0.37, 4*0.37,9)
+	Om0s = numpy.linspace(0.3-.05, 0.3+.1,9)
 
 
 	cosmo_0 = jc.Planck15(Omega_c = 0.3, w0=1., wa=0.)
@@ -36,14 +36,25 @@ def pdf():
 
 	J_nodes = jax.jacfwd(nodes)
 
-	# ans=numpy.zeros((len(Om0s),len(w0s),len(was)))
-	ans = dict()
+	ans=numpy.zeros((len(Om0s),len(w0s),len(was)))
+	# ans = dict()
 	for i, Om0 in enumerate(Om0s):
 		for j, w0 in enumerate(w0s):
 			for k, wa in enumerate(was):
 				W = jnp.array((Om0, w0, wa))
 				J = J_nodes(W)
-				ans[(Om0, w0, wa)] = jnp.dot(J.T,J)
+				ans[i,j,k] = jnp.sqrt(jnp.linalg.det(jnp.dot(J.T,J)))
+
+	fig, ax = plt.subplots(3,3)
+	for Om0s_index, ax in enumerate(axs.flat):
+		im = ax.imshow(ans[Om0s_index,:,:],origin='upper', extent=[w0s[0], w0s[-1], was[0], was[-1]])
+		ax.set_title(r"$w_0$-$w_a$ $\Omega_M={}$".format(Om0s[Om0s_index]))
+		ax.set_xlabel(r"$w_0$")
+		ax.set_ylabel(r"$w_a$")
+		fig.colorbar(im, ax=ax)
+
+	plt.show()
+
 
 def node_to_cosmo():
 	cosmo_desi = Flatw0waCDM(H0=70, Om0=0.343, w0 = -0.64, wa = -1.27)
