@@ -16,10 +16,10 @@ import astropy
 jax.config.update("jax_enable_x64", True)
 
 def pdf():
-	zs = numpy.concatenate([numpy.arange(0.05,0.8,0.05),numpy.arange(0.8,1.21,0.1)])
+	zs = numpy.concatenate([numpy.arange(0.05,0.8,0.05),numpy.arange(0.8,1.5,0.1),numpy.array([2.2])])
 	aas = 1/(1+zs)
-	w0s = numpy.linspace(-1-2*0.11, 4*0.11,9)
-	was =  numpy.linspace(0-2*0.37, 4*0.37,9)
+	w0s = numpy.linspace(-1.2,-0.2,10)
+	was =  numpy.linspace(-2, 2 ,10)
 	Om0s = numpy.linspace(0.3-.05, 0.3+.1,9)
 
 
@@ -45,16 +45,17 @@ def pdf():
 				J = J_nodes(W)
 				ans[i,j,k] = jnp.sqrt(jnp.linalg.det(jnp.dot(J.T,J)))
 
-	fig, axs = plt.subplots(3,3,figsize=(12,10))
+	fig, axs = plt.subplots(3,3, figsize=(9,9))
 
 	for Om0s_index, ax in enumerate(axs.flat):
-		im = ax.imshow(ans[Om0s_index,:,:],origin='upper', extent=[w0s[0], w0s[-1], was[0], was[-1]] )
+		im = ax.imshow(ans[Om0s_index,:,:],origin='upper', extent=[w0s[0], w0s[-1], was[0], was[-1]], aspect="auto")
 		ax.set_title("$\Omega_M={:7.5f}$".format(Om0s[Om0s_index]))
 		ax.set_xlabel(r"$w_0$")
 		ax.set_ylabel(r"$w_a$")
 		fig.colorbar(im, ax=ax)
 
 	fig.tight_layout()	
+	fig.savefig('result.png')
 
 	plt.show()
 
