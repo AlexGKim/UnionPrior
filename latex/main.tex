@@ -46,21 +46,30 @@ The prior used in the Union3 analysis is inconsistent with that used by DESI.  U
 DESI takes a uniform prior in $\Omega_M$--$w_0$--$w_a$ space.  The Union3 flat prior
 on $n$  corresponds to a $\theta=\{\Omega_M, w_0, w_a\}$ prior
 \begin{equation}
-p(\Omega_M, w_0,w_a) \propto \sqrt{\det{\left(J^T J\right)}},
+p(\Omega_M, w_0,w_a) \propto \omega =  \sqrt{\det{\left(J^T J\right)}},
 \end{equation}
-where $J$ is the Jacobian matrix of $f$
-and $J^TJ$ is the Gram matrix.
+where $J$ is the Jacobian matrix of $f$, $J^TJ$ is the Gram matrix, and $\omega$ is the volume induced by the embedding.
+Surfaces of $\omega$ values\ for a grid of values of $\Omega_M$
+are plotted in Figure~\ref{fig:priors}. 
 
-The values $\sqrt{\det{\left(J^T J\right)}}$,  i.e.\ the Union3 prior for $w_0$--$w_a$ up to a normalization factor,  for a grid of values of $\Omega_M$
-given the flat node-value prior is plotted in Figure~\ref{fig:priors}. 
-The prior favors small $w_0$ and large $w_a$.  $\Lambda$CDM lies in a disfavored region.
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
    \includegraphics[width=5.5in]{../result.png} 
-   \caption{Union3 ``Binned'' model prior (up to a normalization factor)  in $w_0$--$w_a$ for a grid of values of $\Omega_M$ given the flat node-value prior.
-   Values are $\sqrt{\det{\left(J^T J\right)}}$.}
+   \caption{Surfaces of $\omega$  in $w_0$--$w_a$ for a grid of values of $\Omega_M$.  Also plotted are the best fit DESI DESI+Union3
+   result and  $\Lambda$CDM.}
    \label{fig:priors}
 \end{figure}
-In order for DESI to properly incorporate the Union3 results, the posterior should be reweighted by the inverse of the above prior.
+
+The results of the Union3 ``Binned'' model have been provided to DESI in the form of a covariance matrix that describes
+the Hessian of the node-value posterior.   Values of the posterior for a grid of are shown in Figure~\ref{fig:posterior}
+\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[width=5.5in]{../contour.png} 
+   \caption{Red: Contours of the Union3 ``Binned'' model  posterior  $\ln{p}$ 
+   in $w_0$--$w_a$ for a grid of values of $\Omega_M$.  
+   The $+$ symbol shows the location of the posterior maximum.  Also plotted are the best fit DESI DESI+Union3
+   result and  $\Lambda$CDM.}
+   \label{fig:posterior}
+\end{figure}
 
 \end{document}  

@@ -28,12 +28,14 @@ def pdf():
 	n0 = invcov[1:,0]
 	invcov = invcov[1:,1:]
 
+	desi = [-0.64,-1.27]
+
 	aas = 1/(1+zs)
 
 	# w0s = numpy.linspace(-1.2,-0.2,3)
 	# was =  numpy.linspace(-2, 2 ,3)
-	w0s = numpy.linspace(-1.1,-0.3,12)
-	was =  numpy.linspace(-3, 1, 12)	
+	w0s = numpy.linspace(-1.05,-0.35,20)
+	was =  numpy.linspace(-3, 1, 20)	
 	Om0s = numpy.linspace(0.3-.05, 0.3+.05,9)
 
 	cosmo_0 = jc.Planck15(Omega_c = 0.3, Omega_b=0, w0=-1., wa=0.)
@@ -49,49 +51,82 @@ def pdf():
 
 	J_nodes = jax.jacfwd(nodes)
 
-	omega=numpy.zeros((len(Om0s),len(w0s),len(was)))
-	lnp_union = numpy.zeros((len(Om0s),len(w0s),len(was)))
-	# omega = dict()
+	omega=numpy.zeros((len(Om0s),len(was),len(w0s)))
+	lnp_union = numpy.zeros((len(Om0s),len(was),len(w0s))) # row - column
 	for i, Om0 in enumerate(Om0s):
-		for j, w0 in enumerate(w0s):
-			for k, wa in enumerate(was):
+		for k, wa in enumerate(was):
+			for j, w0 in enumerate(w0s):
 				W = jnp.array((Om0, w0, wa))
 				N = nodes(W)
 				J = J_nodes(W)
-				omega[i,j,k] = jnp.sqrt(jnp.linalg.det(jnp.dot(J.T,J)))
-				lnp_union[i,j,k] = -0.5 * ((N.T-n0) @ invcov @ (N.T-n0))
+				omega[i,k,j] = jnp.sqrt(jnp.linalg.det(jnp.dot(J.T,J)))
+				lnp_union[i,k,j] = -0.5 * ((N.T-n0) @ invcov @ (N-n0))
 
-	levels = np.arange(-18, 0, 1)
+	X, Y = numpy.meshgrid(w0s, was)
+	zero_level = np.arange(-1.5,0.001,0.5)
 	fig, axs = plt.subplots(3,3, figsize=(12,12))
 	for Om0s_index, ax in enumerate(axs.flat):
-		CS = ax.contour(w0s, was, lnp_union[Om0s_index,:,:].T, levels=levels, colors='red',label=r'$\ln{p}$')
-		ax.clabel(CS, levels, inline=True, fontsize=10)
-		CS2 = ax.contour(w0s, was, lnp_union[Om0s_index,:,:].T+ numpy.log(omega[Om0s_index,:,:].T), levels=levels,colors='blue',label=r'$\ln{p} + \ln{w}$')
-		ax.clabel(CS2, levels, inline=True, fontsize=10)
+		levels=zero_level+lnp_union[Om0s_index,:,:].max()
+		CS = ax.contour(X, Y, lnp_union[Om0s_index,:,:], levels=levels, colors='red')
+
+		ax.clabel(CS, CS.levels, inline=True, fontsize=5)
+
+		_holder = lnp_union[Om0s_index,:,:]+ numpy.log(omega[Om0s_index,:,:])
+		levels=zero_level+_holder.max()
+		CS2 = ax.contour(X, Y, lnp_union[Om0s_index,:,:]+ numpy.log(omega[Om0s_index,:,:]), levels=levels,colors='blue')
+		ax.clabel(CS2, CS2.levels, inline=True, fontsize=5)
+
+		max_value = lnp_union[Om0s_index,:,:].max()
+		# get position index of this calue in your data array 
+		local_max_index = numpy.where(lnp_union[Om0s_index,:,:]==max_value)
+	    ## retrieve position of your
+		max_x = X[local_max_index[0], local_max_index[1]]
+		max_y = Y[local_max_index[0], local_max_index[1]]
+		ax.scatter(max_x, max_y ,marker='+',color='red',label=r'max $\ln{p}$')
+
+		max_value = _holder.max()
+		# get position index of this calue in your data array 
+		local_max_index = numpy.where(_holder==max_value)
+	    ## retrieve position of your
+		max_x = X[local_max_index[0], local_max_index[1]]
+		max_y = Y[local_max_index[0], local_max_index[1]]
+
+		ax.scatter(max_x, max_y ,marker='+',color='blue',label=r'max $\ln{p}+ \ln{w}$')	
+
 		ax.set_xlabel(r"$w_0$")
 		ax.set_ylabel(r"$w_a$")
+		ax.scatter(desi[0],desi[1],label="DESI")
+		ax.scatter(-1,0,label=r"$\Lambda$CDM")
+		ax.legend()
 		ax.set_title("$\Omega_M={:7.5f}$".format(Om0s[Om0s_index]))
 
 	fig.suptitle(r"$\ln{p}$ (red); $\ln{p}+\ln{w}$ (blue)")
-	fig.tight_layout()	
+	fig.tight_layout()
+	# fig.show()
+
 	fig.savefig('contour.png')
-	fig.show()
+	# fig.show()
+
 
 
 	fig, axs = plt.subplots(3,3, figsize=(9,9))
 	for Om0s_index, ax in enumerate(axs.flat):
-		CS = ax.contour(w0s, was, numpy.log(omega[Om0s_index,:,:].T), colors='red',label=r'$\ln{p}$')
+		CS = ax.contour(X, Y, numpy.log(omega[Om0s_index,:,:].T))
 		ax.clabel(CS, CS.levels, inline=True, fontsize=10)
-		ax.set_title("$\Omega_M={:7.5f}$".format(Om0s[Om0s_index]))
+		ax.set_title(r"$\Omega_M={:7.5f}$".format(Om0s[Om0s_index]))
 		ax.set_xlabel(r"$w_0$")
 		ax.set_ylabel(r"$w_a$")
-		fig.colorbar(im, ax=ax)
+		ax.scatter(desi[0],desi[1],label="DESI")
+		ax.scatter(-1,0,label=r"$\Lambda$CDM")
+		ax.legend()
 	fig.suptitle(r"$\ln{w}$")
 	fig.tight_layout()	
 	fig.savefig('result.png')
 
-	plt.show()
+	# plt.show()
 
+	numpy.save("omega",omega)
+	numpy.save("lnp_union",lnp_union)
 
 
 
