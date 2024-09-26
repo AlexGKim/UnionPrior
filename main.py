@@ -13,22 +13,35 @@ import jax
 import jax_cosmo as jc
 import jax.numpy as jnp
 import astropy
+from astropy.io import fits
 jax.config.update("jax_enable_x64", True)
 
 def pdf():
-	zs = numpy.concatenate([numpy.arange(0.05,0.8,0.05),numpy.arange(0.8,1.5,0.1),numpy.array([2.2])])
+
+	# f2="mu_mat_union3_cosmo=2_mu.fits"
+	# hdu_list2 = fits.open(f2, memmap=True)
+	f1="mu_mat_union3_cosmo=2.fits"
+	hdu_list = fits.open(f1, memmap=True)
+	invcov = hdu_list[0].data
+	invcov = invcov.astype("float")
+	zs = invcov[0,1:]
+	n0 = invcov[1:,0]
+	invcov = invcov[1:,1:]
+
 	aas = 1/(1+zs)
-	w0s = numpy.linspace(-1.2,-0.2,10)
-	was =  numpy.linspace(-2, 2 ,10)
-	Om0s = numpy.linspace(0.3-.05, 0.3+.1,9)
 
+	# w0s = numpy.linspace(-1.2,-0.2,3)
+	# was =  numpy.linspace(-2, 2 ,3)
+	w0s = numpy.linspace(-1.1,-0.3,12)
+	was =  numpy.linspace(-3, 1, 12)	
+	Om0s = numpy.linspace(0.3-.05, 0.3+.05,9)
 
-	cosmo_0 = jc.Planck15(Omega_c = 0.3, w0=1., wa=0.)
+	cosmo_0 = jc.Planck15(Omega_c = 0.3, Omega_b=0, w0=-1., wa=0.)
 	dL = (1+zs) * jc.background.transverse_comoving_distance(cosmo_0 ,aas) # In [Mpc/h]
 	mu_0 = 5*jnp.log10(dL) + 25
 
 	def nodes(W):
-		cosmo = jc.Planck15(Omega_c = W[0]-0.0486, w0=W[1], wa=W[2])
+		cosmo = jc.Planck15(Omega_c = W[0],Omega_b=0,  w0=W[1], wa=W[2])
 		dL = (1+zs) * jc.background.transverse_comoving_distance(cosmo ,aas) # In [Mpc/h]
 		mu = 5*jnp.log10(dL) + 25
 		nodes = mu-mu_0
@@ -36,28 +49,50 @@ def pdf():
 
 	J_nodes = jax.jacfwd(nodes)
 
-	ans=numpy.zeros((len(Om0s),len(w0s),len(was)))
-	# ans = dict()
+	omega=numpy.zeros((len(Om0s),len(w0s),len(was)))
+	lnp_union = numpy.zeros((len(Om0s),len(w0s),len(was)))
+	# omega = dict()
 	for i, Om0 in enumerate(Om0s):
 		for j, w0 in enumerate(w0s):
 			for k, wa in enumerate(was):
 				W = jnp.array((Om0, w0, wa))
+				N = nodes(W)
 				J = J_nodes(W)
-				ans[i,j,k] = jnp.sqrt(jnp.linalg.det(jnp.dot(J.T,J)))
+				omega[i,j,k] = jnp.sqrt(jnp.linalg.det(jnp.dot(J.T,J)))
+				lnp_union[i,j,k] = -0.5 * ((N.T-n0) @ invcov @ (N.T-n0))
+
+	levels = np.arange(-18, 0, 1)
+	fig, axs = plt.subplots(3,3, figsize=(12,12))
+	for Om0s_index, ax in enumerate(axs.flat):
+		CS = ax.contour(w0s, was, lnp_union[Om0s_index,:,:].T, levels=levels, colors='red',label=r'$\ln{p}$')
+		ax.clabel(CS, levels, inline=True, fontsize=10)
+		CS2 = ax.contour(w0s, was, lnp_union[Om0s_index,:,:].T+ numpy.log(omega[Om0s_index,:,:].T), levels=levels,colors='blue',label=r'$\ln{p} + \ln{w}$')
+		ax.clabel(CS2, levels, inline=True, fontsize=10)
+		ax.set_xlabel(r"$w_0$")
+		ax.set_ylabel(r"$w_a$")
+		ax.set_title("$\Omega_M={:7.5f}$".format(Om0s[Om0s_index]))
+
+	fig.suptitle(r"$\ln{p}$ (red); $\ln{p}+\ln{w}$ (blue)")
+	fig.tight_layout()	
+	fig.savefig('contour.png')
+	fig.show()
+
 
 	fig, axs = plt.subplots(3,3, figsize=(9,9))
-
 	for Om0s_index, ax in enumerate(axs.flat):
-		im = ax.imshow(ans[Om0s_index,:,:],origin='upper', extent=[w0s[0], w0s[-1], was[0], was[-1]], aspect="auto")
+		CS = ax.contour(w0s, was, numpy.log(omega[Om0s_index,:,:].T), colors='red',label=r'$\ln{p}$')
+		ax.clabel(CS, CS.levels, inline=True, fontsize=10)
 		ax.set_title("$\Omega_M={:7.5f}$".format(Om0s[Om0s_index]))
 		ax.set_xlabel(r"$w_0$")
 		ax.set_ylabel(r"$w_a$")
 		fig.colorbar(im, ax=ax)
-
+	fig.suptitle(r"$\ln{w}$")
 	fig.tight_layout()	
 	fig.savefig('result.png')
 
 	plt.show()
+
+
 
 
 def node_to_cosmo():
