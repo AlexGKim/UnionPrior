@@ -51,7 +51,7 @@ def pdf():
 
 	J_nodes = jax.jacfwd(nodes)
 
-	omega=numpy.zeros((len(Om0s),len(was),len(w0s)))
+	logomega=numpy.zeros((len(Om0s),len(was),len(w0s)))
 	lnp_union = numpy.zeros((len(Om0s),len(was),len(w0s))) # row - column
 	for i, Om0 in enumerate(Om0s):
 		for k, wa in enumerate(was):
@@ -59,50 +59,66 @@ def pdf():
 				W = jnp.array((Om0, w0, wa))
 				N = nodes(W)
 				J = J_nodes(W)
-				omega[i,k,j] = jnp.sqrt(jnp.linalg.det(jnp.dot(J.T,J)))
+				logomega[i,k,j] = -0.5 * (N**2).sum() + 0.5 * jnp.log(jnp.linalg.det(jnp.dot(J.T,J)))
 				lnp_union[i,k,j] = -0.5 * ((N.T-n0) @ invcov @ (N-n0))
+
+	lnp_2 = lnp_union + logomega
 
 	X, Y = numpy.meshgrid(w0s, was)
 	zero_level = np.arange(-1.5,0.001,0.5)
+
+	max_value = lnp_union.max()
+	local_max_index = numpy.where(lnp_union==max_value)
+	levels = zero_level+ max_value
+
+	max_value2 = lnp_2.max()
+	local_max_index2 = numpy.where(lnp_2==max_value2)
+	levels2 = zero_level+ max_value2
+
 	fig, axs = plt.subplots(3,3, figsize=(12,12))
 	for Om0s_index, ax in enumerate(axs.flat):
-		levels=zero_level+lnp_union[Om0s_index,:,:].max()
+		# levels=zero_level+lnp_union[Om0s_index,:,:].max()
 		CS = ax.contour(X, Y, lnp_union[Om0s_index,:,:], levels=levels, colors='red')
 
-		ax.clabel(CS, CS.levels, inline=True, fontsize=5)
+		ax.clabel(CS, CS.levels, inline=True, fontsize=8)
 
-		_holder = lnp_union[Om0s_index,:,:]+ numpy.log(omega[Om0s_index,:,:])
-		levels=zero_level+_holder.max()
-		CS2 = ax.contour(X, Y, lnp_union[Om0s_index,:,:]+ numpy.log(omega[Om0s_index,:,:]), levels=levels,colors='blue')
-		ax.clabel(CS2, CS2.levels, inline=True, fontsize=5)
+		# _holder = lnp_union[Om0s_index,:,:]+ logomega[Om0s_index,:,:]
+		# levels=zero_level+_holder.max()
+		CS2 = ax.contour(X, Y, lnp_2[Om0s_index,:,:], levels=levels2,colors='blue')
+		ax.clabel(CS2, CS2.levels, inline=True, fontsize=8)
 
-		max_value = lnp_union[Om0s_index,:,:].max()
+		# max_value = lnp_union[Om0s_index,:,:].max()
 		# get position index of this calue in your data array 
-		local_max_index = numpy.where(lnp_union[Om0s_index,:,:]==max_value)
+		# local_max_index = numpy.where(lnp_union[Om0s_index,:,:]==max_value)
 	    ## retrieve position of your
-		max_x = X[local_max_index[0], local_max_index[1]]
-		max_y = Y[local_max_index[0], local_max_index[1]]
-		ax.scatter(max_x, max_y ,marker='+',color='red',label=r'max $\ln{p}$')
+		# max_x = X[local_max_index[0], local_max_index[1]]
+		# max_y = Y[local_max_index[0], local_max_index[1]]
+		if local_max_index[0] == Om0s_index:
+			max_x = X[local_max_index[1], local_max_index[2]]
+			max_y = Y[local_max_index[1], local_max_index[2]]		
+			ax.scatter(max_x, max_y ,marker='*',color='red',s=24,label=r'max $\ln{p}$')
 
-		max_value = _holder.max()
+		# max_value = _holder.max()
 		# get position index of this calue in your data array 
-		local_max_index = numpy.where(_holder==max_value)
+		# local_max_index = numpy.where(_holder==max_value)
 	    ## retrieve position of your
-		max_x = X[local_max_index[0], local_max_index[1]]
-		max_y = Y[local_max_index[0], local_max_index[1]]
-
-		ax.scatter(max_x, max_y ,marker='+',color='blue',label=r'max $\ln{p}+ \ln{w}$')	
+		# max_x = X[local_max_index[0], local_max_index[1]]
+		# max_y = Y[local_max_index[0], local_max_index[1]]
+		if local_max_index2[0] == Om0s_index:
+			max_x = X[local_max_index2[1], local_max_index2[2]]
+			max_y = Y[local_max_index2[1], local_max_index2[2]]			
+			ax.scatter(max_x, max_y ,marker='*',color='blue',s=24,label=r'max $\ln{p}+ \ln{w}$')	
 
 		ax.set_xlabel(r"$w_0$")
 		ax.set_ylabel(r"$w_a$")
 		ax.scatter(desi[0],desi[1],label="DESI")
 		ax.scatter(-1,0,label=r"$\Lambda$CDM")
 		ax.legend()
-		ax.set_title("$\Omega_M={:7.5f}$".format(Om0s[Om0s_index]))
+		ax.set_title("$\Omega_M={:7.4f}$".format(Om0s[Om0s_index]))
 
 	fig.suptitle(r"$\ln{p}$ (red); $\ln{p}+\ln{w}$ (blue)")
 	fig.tight_layout()
-	# fig.show()
+	fig.show()
 
 	fig.savefig('contour.png')
 	# fig.show()
@@ -110,17 +126,28 @@ def pdf():
 
 
 	fig, axs = plt.subplots(3,3, figsize=(9,9))
+	max_value = logomega.max()
+	local_max_index = numpy.where(logomega==max_value)
+	levels = zero_level+ max_value
+
 	for Om0s_index, ax in enumerate(axs.flat):
-		CS = ax.contour(X, Y, numpy.log(omega[Om0s_index,:,:].T))
+		CS = ax.contour(X, Y, logomega[Om0s_index,:,:],levels=levels)
 		ax.clabel(CS, CS.levels, inline=True, fontsize=10)
 		ax.set_title(r"$\Omega_M={:7.5f}$".format(Om0s[Om0s_index]))
 		ax.set_xlabel(r"$w_0$")
 		ax.set_ylabel(r"$w_a$")
 		ax.scatter(desi[0],desi[1],label="DESI")
 		ax.scatter(-1,0,label=r"$\Lambda$CDM")
+		if local_max_index[0] == Om0s_index:
+			max_x = X[local_max_index[1], local_max_index[2]]
+			max_y = Y[local_max_index[1], local_max_index[2]]
+			print(max_x,max_y)
+			ax.scatter(max_x,max_y,label="Maximum",s=32,marker="*")
 		ax.legend()
 	fig.suptitle(r"$\ln{w}$")
-	fig.tight_layout()	
+	fig.tight_layout()
+
+	plt.show()
 	fig.savefig('result.png')
 
 	# plt.show()
