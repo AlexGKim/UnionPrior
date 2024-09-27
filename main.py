@@ -36,7 +36,7 @@ def pdf():
 
 	# w0s = numpy.linspace(-1.2,-0.2,3)
 	# was =  numpy.linspace(-2, 2 ,3)
-	w0s = numpy.linspace(-1.05,-0.35,20)
+	w0s = numpy.linspace(-1.15,-0.35,25)
 	was =  numpy.linspace(-4, 2, 25)	
 	Om0s = numpy.linspace(0.3-.05+0.025, 0.3+.05+0.025,9)
 
@@ -65,6 +65,8 @@ def pdf():
 				lnp_union[i,k,j] = -0.5 * ((N.T-n0) @ invcov @ (N-n0))
 
 	lnp_2 = lnp_union - logomega
+
+	
 
 	X, Y = numpy.meshgrid(w0s, was)
 	zero_level = numpy.arange(-3,0.001,0.5)
