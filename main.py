@@ -67,7 +67,7 @@ def pdf():
 	lnp_2 = lnp_union - logomega
 
 	X, Y = numpy.meshgrid(w0s, was)
-	zero_level = np.arange(-3,0.001,0.5)
+	zero_level = numpy.arange(-3,0.001,0.5)
 
 	max_value = lnp_union.max()
 	one_68 = chi2.isf(1-.6826894921370888,3)
