@@ -5,7 +5,7 @@ from scipy.optimize import minimize
 
 from scipy.stats import uniform
 import numpy
-from chainconsumer import Chain, ChainConsumer, make_sample
+# from chainconsumer import Chain, ChainConsumer, make_sample
 import pandas
 import matplotlib.pyplot as plt
 
@@ -14,6 +14,8 @@ import jax_cosmo as jc
 import jax.numpy as jnp
 import astropy
 from astropy.io import fits
+from scipy.stats import chi2
+
 jax.config.update("jax_enable_x64", True)
 
 def pdf():
@@ -35,8 +37,8 @@ def pdf():
 	# w0s = numpy.linspace(-1.2,-0.2,3)
 	# was =  numpy.linspace(-2, 2 ,3)
 	w0s = numpy.linspace(-1.05,-0.35,20)
-	was =  numpy.linspace(-3, 1, 20)	
-	Om0s = numpy.linspace(0.3-.05, 0.3+.05,9)
+	was =  numpy.linspace(-4, 2, 25)	
+	Om0s = numpy.linspace(0.3-.05+0.025, 0.3+.05+0.025,9)
 
 	cosmo_0 = jc.Planck15(Omega_c = 0.3, Omega_b=0, w0=-1., wa=0.)
 	dL = (1+zs) * jc.background.transverse_comoving_distance(cosmo_0 ,aas) # In [Mpc/h]
@@ -62,18 +64,20 @@ def pdf():
 				logomega[i,k,j] = -0.5 * (N**2).sum() + 0.5 * jnp.log(jnp.linalg.det(jnp.dot(J.T,J)))
 				lnp_union[i,k,j] = -0.5 * ((N.T-n0) @ invcov @ (N-n0))
 
-	lnp_2 = lnp_union + logomega
+	lnp_2 = lnp_union - logomega
 
 	X, Y = numpy.meshgrid(w0s, was)
-	zero_level = np.arange(-1.5,0.001,0.5)
+	zero_level = np.arange(-3,0.001,0.5)
 
 	max_value = lnp_union.max()
+	one_68 = chi2.isf(1-.6826894921370888,3)
 	local_max_index = numpy.where(lnp_union==max_value)
-	levels = zero_level+ max_value
+	levels = zero_level*one_68/2 + max_value
 
 	max_value2 = lnp_2.max()
 	local_max_index2 = numpy.where(lnp_2==max_value2)
-	levels2 = zero_level+ max_value2
+
+	levels2 = zero_level*one_68/2 + max_value2
 
 	fig, axs = plt.subplots(3,3, figsize=(12,12))
 	for Om0s_index, ax in enumerate(axs.flat):
@@ -96,7 +100,7 @@ def pdf():
 		if local_max_index[0] == Om0s_index:
 			max_x = X[local_max_index[1], local_max_index[2]]
 			max_y = Y[local_max_index[1], local_max_index[2]]		
-			ax.scatter(max_x, max_y ,marker='*',color='red',s=24,label=r'max $\ln{p}$')
+			ax.scatter(max_x, max_y ,marker='*',color='red',s=64,label=r'max $\ln{p_U}$')
 
 		# max_value = _holder.max()
 		# get position index of this calue in your data array 
@@ -107,18 +111,18 @@ def pdf():
 		if local_max_index2[0] == Om0s_index:
 			max_x = X[local_max_index2[1], local_max_index2[2]]
 			max_y = Y[local_max_index2[1], local_max_index2[2]]			
-			ax.scatter(max_x, max_y ,marker='*',color='blue',s=24,label=r'max $\ln{p}+ \ln{w}$')	
+			ax.scatter(max_x, max_y ,marker='*',color='blue',s=64,label=r'max $\ln{p_F}$')	
 
 		ax.set_xlabel(r"$w_0$")
 		ax.set_ylabel(r"$w_a$")
-		ax.scatter(desi[0],desi[1],label="DESI")
-		ax.scatter(-1,0,label=r"$\Lambda$CDM")
+		ax.scatter(desi[0],desi[1],label="DESI", color='green')
+		ax.scatter(-1,0,label=r"$\Lambda$CDM",color='brown')
 		ax.legend()
-		ax.set_title("$\Omega_M={:7.4f}$".format(Om0s[Om0s_index]))
+		ax.set_title(r"$\Omega_M={:7.4f}$".format(Om0s[Om0s_index]))
 
 	fig.suptitle(r"$\ln{p}$ (red); $\ln{p}+\ln{w}$ (blue)")
 	fig.tight_layout()
-	fig.show()
+	# fig.show()
 
 	fig.savefig('contour.png')
 	# fig.show()
@@ -136,8 +140,8 @@ def pdf():
 		ax.set_title(r"$\Omega_M={:7.5f}$".format(Om0s[Om0s_index]))
 		ax.set_xlabel(r"$w_0$")
 		ax.set_ylabel(r"$w_a$")
-		ax.scatter(desi[0],desi[1],label="DESI")
-		ax.scatter(-1,0,label=r"$\Lambda$CDM")
+		ax.scatter(desi[0],desi[1],label="DESI",color='green')
+		ax.scatter(-1,0,label=r"$\Lambda$CDM",color='brown')
 		if local_max_index[0] == Om0s_index:
 			max_x = X[local_max_index[1], local_max_index[2]]
 			max_y = Y[local_max_index[1], local_max_index[2]]
@@ -147,15 +151,17 @@ def pdf():
 	fig.suptitle(r"$\ln{w}$")
 	fig.tight_layout()
 
-	plt.show()
+	# plt.show()
 	fig.savefig('result.png')
 
 	# plt.show()
 
-	numpy.save("omega",omega)
+	# numpy.save("omega",omega)
+	numpy.save("lnp_2",lnp_2)	
 	numpy.save("lnp_union",lnp_union)
 
-
+pdf()
+wfe
 
 def node_to_cosmo():
 	cosmo_desi = Flatw0waCDM(H0=70, Om0=0.343, w0 = -0.64, wa = -1.27)
@@ -231,13 +237,13 @@ def node_to_cosmo():
 	fig.show()
 
 
-	c = ChainConsumer()
-	# c.add_chain(Chain(samples=df_Om0, name=r"$\Omega_M$"))
-	c.add_chain(Chain(samples=df_w0, name=r"$w_0$"))
-	c.add_chain(Chain(samples=df_wa, name=r"$w_a$"))
+	# c = ChainConsumer()
+	# # c.add_chain(Chain(samples=df_Om0, name=r"$\Omega_M$"))
+	# c.add_chain(Chain(samples=df_w0, name=r"$w_0$"))
+	# c.add_chain(Chain(samples=df_wa, name=r"$w_a$"))
 
-	fig = c.plotter.plot(figsize=10)
-	fig.show()
+	# fig = c.plotter.plot(figsize=10)
+	# fig.show()
 
 def cosmo_to_node():
 	n = 100
@@ -265,31 +271,31 @@ def cosmo_to_node():
 
 	df = pandas.DataFrame(results,columns=[r'$\Omega_M$', r'$w_0$', r'$w_a$', r'$H_0$'])
 	# df.to_csv("cosmo_to_model.tmp.csv")
-	c = ChainConsumer()
-	c.add_chain(Chain(samples=df, name="Prior"))
-	ubf = {'$\Omega_M$':0.244, '$w_0$':-.735, '$w_a$':0  } 
-	sc = {'$w_0$':-1, '$w_a$':0  } 
+	# c = ChainConsumer()
+	# c.add_chain(Chain(samples=df, name="Prior"))
+	# ubf = {'$\Omega_M$':0.244, '$w_0$':-.735, '$w_a$':0  } 
+	# sc = {'$w_0$':-1, '$w_a$':0  } 
 
-	c.add_marker(location=ubf,name="Union3 FlatwCDM",color='red',marker_size="40.")
-	c.add_marker(location=sc,name="LCDM",color='green',marker_size="40.")
+	# c.add_marker(location=ubf,name="Union3 FlatwCDM",color='red',marker_size="40.")
+	# c.add_marker(location=sc,name="LCDM",color='green',marker_size="40.")
 
-	fig = c.plotter.plot(figsize=10)
-	fig.show()
+	# fig = c.plotter.plot(figsize=10)
+	# fig.show()
 
-cosmo_to_node()
+# cosmo_to_node()
 
 
-	# residuals = []
+# 	# residuals = []
 
-	# for _ in range(n):
-	# 	_cosmo = Flatw0waCDM(H0=70, Om0=Om0_pdf.rvs(), w0 = w0_pdf.rvs(),wa = wa_pdf.rvs()) 
-	# 	mu = _cosmo.distmod(zs)
-	# 	residuals.append((mu - mu0).value)
+# 	# for _ in range(n):
+# 	# 	_cosmo = Flatw0waCDM(H0=70, Om0=Om0_pdf.rvs(), w0 = w0_pdf.rvs(),wa = wa_pdf.rvs()) 
+# 	# 	mu = _cosmo.distmod(zs)
+# 	# 	residuals.append((mu - mu0).value)
 
-	# cols = ["N. {}".format(i) for i in range(len(zs))]
-	# df = pandas.DataFrame(residuals,columns=cols)
+# 	# cols = ["N. {}".format(i) for i in range(len(zs))]
+# 	# df = pandas.DataFrame(residuals,columns=cols)
 
-	c = ChainConsumer()
-	c.add_chain(Chain(samples=df, name="Prior"))
-	fig = c.plotter.plot(figsize=10)
-	fig.show()
+# 	c = ChainConsumer()
+# 	c.add_chain(Chain(samples=df, name="Prior"))
+# 	fig = c.plotter.plot(figsize=10)
+# 	fig.show()

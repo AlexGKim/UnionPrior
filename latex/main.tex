@@ -12,7 +12,7 @@
 %SetFonts
 
 
-\title{Unity Binned Prior}
+\title{Unity ``Binned'' Prior}
 \author{Alex Kim}
 %\date{}							% Activate to display a given date or no date
 
@@ -25,51 +25,62 @@ of Union3 could affect  DESI $w_0$--$w_a$  fits.
 
 In the Unity ``Binned'' model, the distance modulus model function
 is the sum of the distance modulus for $\Omega_M=0.3$  $\Lambda$CDM plus a second-order spline specified by node values
-at a fixed set of redshifts.  The results of the fit are provided by David as
+at a fixed set of redshifts.  The prior on the node values are taken to be standard normal distributions.  The results of the fit are provided by David as
 $\mu_{\Lambda \text{CDM}}(z;\Omega_M=0.3) + n$ and the  Hessian of the $n$ posterior,
 where $z$ are the fixed redshifts and $n$ the node-value parameters.
-DESI take the Union ``Binned"-model parameter posterior output as data, interpret the covariance matrix as a Gaussian uncertainty,
+DESI takes the Union ``Binned"-model parameter posterior output as data, interpret the covariance matrix as a Gaussian uncertainty,
 and include them in a larger likelihood. 
 
 DESI uses the posterior to fit a $w_0$--$w_a$ cosmology model, which is not embedded in the Unity ``Binned'' model.  Nevertheless,
 the ``Binned'' model can come close by fixing the values at the modes to match those of the $w_0$--$w_a$  model and swallowing the
 inconsistencies between the physics and spline predictions between the nodes.  For the purposes of this work, I consider
-as an alternative  $w_0$--$w_a$ model  the subspace
-of the ``Binned'' model that have $\mu$ values at the nodes in the space  covered by the true $w_0$--$w_a$
-model.  The transformation between the subspace parameters $\theta=\{\Omega_M, w_0, w_a\}$ and its $n$ parameters is given by
+as an alternative  ``$w_0$--$w_a$'' model  the subspace of node values that give
+$\mu$ values accommodated by the actual $w_0$--$w_a$
+model.  The transformation between the subspace parameters $\theta=\{\Omega_M, w_0, w_a\}$ and their corresponding
+node-value $n$ parameters is given by
 \begin{align}
 	n &= f(\Omega_M, w_0, w_a; z) \\
-	& \equiv \mu_{w_0 w_a \text{CDM}}(z;\Omega_M, w_0, w_a)  - \mu_{\Lambda \text{CDM}}(z;\Omega_M=0.3) 
+	& \equiv \mu_{w_0 w_a \text{CDM}}(z;\Omega_M, w_0, w_a)  - \mu_{\Lambda \text{CDM}}(z;\Omega_M=0.3).
 \end{align}
 
-The prior used in the Union3 analysis is inconsistent with that used by DESI.  Union3 takes a uniform prior for its node values whereas
-DESI takes a uniform prior in $\Omega_M$--$w_0$--$w_a$ space.  The Union3 flat prior
-on $n$  corresponds to a $\theta=\{\Omega_M, w_0, w_a\}$ prior
+The standard normal prior on the nodes corresponds to a prior on the  $w_0$--$w_a$ manifold
 \begin{equation}
-p(\Omega_M, w_0,w_a) \propto \omega =  \sqrt{\det{\left(J^T J\right)}},
+p_U(\Omega_M, w_0,w_a) = \mathcal{N}(f(\Omega_M, w_0, w_a; z),1)  \sqrt{\det{\left(J^T J\right)}},
 \end{equation}
-where $J$ is the Jacobian matrix of $f$, $J^TJ$ is the Gram matrix, and $\omega$ is the volume induced by the embedding.
-Surfaces of $\omega$ values\ for a grid of values of $\Omega_M$
-are plotted in Figure~\ref{fig:priors}. 
+where $J$ is the Jacobian matrix of $f$, $J^TJ$ is the Gram matrix.
+Surfaces of $\ln{p_U}(\Omega_M, w_0,w_a)$ values\ for a grid of values of $\Omega_M$
+are plotted in Figure~\ref{fig:priors}.
+The Union3 posterior, denoted as $p_U(n)$, has this prior baked in.  For a flat prior in $\Omega_M$--$w_0$--$w_a$
+the new posterior on the manifold can be determined from the original posterior as
+\begin{equation}
+p_F \propto \frac{p_U(n)}{\mathcal{N}(n,1)  \sqrt{\det{\left(J^T J\right)}}}
+\end{equation}
+Inspection of Figure~\ref{fig:priors} show that there will be a shift in the contours toward lower $w_0$ higher $w_a$.
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
    \includegraphics[width=5.5in]{../result.png} 
-   \caption{Surfaces of $\omega$  in $w_0$--$w_a$ for a grid of values of $\Omega_M$.  Also plotted are the best fit DESI DESI+Union3
+   \caption{Surfaces of $\ln{p_U}(\Omega_M, w_0,w_a)$  in $w_0$--$w_a$ for a grid of values of $\Omega_M$.    The star (in the upper-left plot) shows the location of the maximum.
+   Plotted as points are the best fit  DESI+Union3
    result and  $\Lambda$CDM.}
    \label{fig:priors}
 \end{figure}
 
-The results of the Union3 ``Binned'' model have been provided to DESI in the form of a covariance matrix that describes
-the Hessian of the node-value posterior.   Values of the posterior for a grid of are shown in Figure~\ref{fig:posterior}
+The Union3 posterior values $p_U$ (as approximated by the Heissian)  on a grid of $\Omega_M$--$w_0$--$w_a$ values
+are shown as the red contours in Figure~\ref{fig:posterior}.   The posterior $p_F$ assuming a flat
+prior in $\Omega_M$--$w_0$--$w_a$  are overplotted in blue.
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
    \includegraphics[width=5.5in]{../contour.png} 
-   \caption{Red: Contours of the Union3 ``Binned'' model  posterior  $\ln{p}$ 
-   in $w_0$--$w_a$ for a grid of values of $\Omega_M$.  
-   The $+$ symbol shows the location of the posterior maximum.  Also plotted are the best fit DESI DESI+Union3
+   \caption{Red: Contours of the Union3 ``Binned'' model  posterior  $\ln{p_U}$ for a grid of values
+   in $w_0$--$w_a$ and several $\Omega_M$.  
+   Blue: Contours of  $\ln{p_F}$, which represent the Union3 results replacing the flat prior in node values
+   with a flat prior in  $\Omega_M$--$w_0$--$w_a$ space. 
+   The stars show the locations of the maxima
+   of the two surfaces. Plotted as points are the best fit DESI DESI+Union3
    result and  $\Lambda$CDM.}
    \label{fig:posterior}
 \end{figure}
+
 
 \end{document}  
