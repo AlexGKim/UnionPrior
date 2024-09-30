@@ -37,8 +37,9 @@ def pdf():
 	# w0s = numpy.linspace(-1.2,-0.2,3)
 	# was =  numpy.linspace(-2, 2 ,3)
 	w0s = numpy.linspace(-1.15,-0.35,25)
-	was =  numpy.linspace(-4, 2, 25)	
+	was =  numpy.linspace(-4, 2, 30)	
 	Om0s = numpy.linspace(0.3-.05+0.025, 0.3+.05+0.025,9)
+	Om0s = numpy.linspace(0.25, 0.45,9)
 
 	cosmo_0 = jc.Planck15(Omega_c = 0.3, Omega_b=0, w0=-1., wa=0.)
 	dL = (1+zs) * jc.background.transverse_comoving_distance(cosmo_0 ,aas) # In [Mpc/h]
@@ -66,7 +67,7 @@ def pdf():
 
 	lnp_2 = lnp_union - logomega
 
-	
+
 
 	X, Y = numpy.meshgrid(w0s, was)
 	zero_level = numpy.arange(-3,0.001,0.5)
@@ -122,7 +123,7 @@ def pdf():
 		ax.legend()
 		ax.set_title(r"$\Omega_M={:7.4f}$".format(Om0s[Om0s_index]))
 
-	fig.suptitle(r"$\ln{p}$ (red); $\ln{p}+\ln{w}$ (blue)")
+	fig.suptitle(r"$\ln{p}_U$ (red); $\ln{p}_F$ (blue)")
 	fig.tight_layout()
 	# fig.show()
 
@@ -161,6 +162,9 @@ def pdf():
 	# numpy.save("omega",omega)
 	numpy.save("lnp_2",lnp_2)	
 	numpy.save("lnp_union",lnp_union)
+
+	# lnp_2 = numpy.load("lnp_2.npy")	
+	# lnp_union = numpy.load("lnp_union.npy")
 
 pdf()
 wfe
