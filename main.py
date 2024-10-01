@@ -54,33 +54,39 @@ def pdf():
 
 	J_nodes = jax.jacfwd(nodes)
 
-	logomega=numpy.zeros((len(Om0s),len(was),len(w0s)))
-	lnp_union = numpy.zeros((len(Om0s),len(was),len(w0s))) # row - column
-	for i, Om0 in enumerate(Om0s):
-		for k, wa in enumerate(was):
-			for j, w0 in enumerate(w0s):
-				W = jnp.array((Om0, w0, wa))
-				N = nodes(W)
-				J = J_nodes(W)
-				logomega[i,k,j] = -0.5 * (N**2).sum() + 0.5 * jnp.log(jnp.linalg.det(jnp.dot(J.T,J)))
-				lnp_union[i,k,j] = -0.5 * ((N.T-n0) @ invcov @ (N-n0))
+	if True:
+		lnp_2 = numpy.load("lnp_2.npy")	
+		lnp_union = numpy.load("lnp_union.npy")
+		logomega = numpy.load("logomega.npy")		
+	else:
+		logomega=numpy.zeros((len(Om0s),len(was),len(w0s)))
+		lnp_union = numpy.zeros((len(Om0s),len(was),len(w0s))) # row - column
+		for i, Om0 in enumerate(Om0s):
+			for k, wa in enumerate(was):
+				for j, w0 in enumerate(w0s):
+					W = jnp.array((Om0, w0, wa))
+					N = nodes(W)
+					J = J_nodes(W)
+					logomega[i,k,j] = -0.5 * (N**2).sum() + 0.5 * jnp.log(jnp.linalg.det(jnp.dot(J.T,J)))
+					lnp_union[i,k,j] = -0.5 * ((N.T-n0) @ invcov @ (N-n0))
 
-	lnp_2 = lnp_union - logomega
+		lnp_2 = lnp_union - logomega 
 
 
 
 	X, Y = numpy.meshgrid(w0s, was)
-	zero_level = numpy.arange(-3,0.001,0.5)
+	zero_level = numpy.arange(-4,0.001,1)
 
 	max_value = lnp_union.max()
 	one_68 = chi2.isf(1-.6826894921370888,3)
+	one_68_full = chi2.isf(1-.6826894921370888,22)	
 	local_max_index = numpy.where(lnp_union==max_value)
-	levels = zero_level*one_68/2 + max_value
+	levels = zero_level*one_68_full/2 #+ max_value
 
 	max_value2 = lnp_2.max()
 	local_max_index2 = numpy.where(lnp_2==max_value2)
 
-	levels2 = zero_level*one_68/2 + max_value2
+	levels2 = zero_level*one_68_full/2 #+ max_value2
 
 	fig, axs = plt.subplots(3,3, figsize=(12,12))
 	for Om0s_index, ax in enumerate(axs.flat):
@@ -115,6 +121,7 @@ def pdf():
 			max_x = X[local_max_index2[1], local_max_index2[2]]
 			max_y = Y[local_max_index2[1], local_max_index2[2]]			
 			ax.scatter(max_x, max_y ,marker='*',color='blue',s=64,label=r'max $\ln{p_F}$')	
+
 
 		ax.set_xlabel(r"$w_0$")
 		ax.set_ylabel(r"$w_a$")
@@ -162,9 +169,9 @@ def pdf():
 	# numpy.save("omega",omega)
 	numpy.save("lnp_2",lnp_2)	
 	numpy.save("lnp_union",lnp_union)
+	numpy.save("logomega",logomega)
 
-	# lnp_2 = numpy.load("lnp_2.npy")	
-	# lnp_union = numpy.load("lnp_union.npy")
+
 
 pdf()
 wfe
