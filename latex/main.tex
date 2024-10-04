@@ -1,9 +1,14 @@
-\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
-\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
-\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+\documentclass[11pt,a4paper]{article}
+\pdfoutput=1
+\usepackage{jcappub}
+\usepackage{natbib}
+% \usepackage[T1]{fontenc} % if needed
+
+%\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+%\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
 %\geometry{landscape}                		% Activate for rotated page geometry
 %\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
-\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+%\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
 								% TeX will automatically convert eps --> pdf in pdflatex		
 \usepackage{amssymb, amsmath}
 
@@ -13,124 +18,168 @@
 
 
 \title{Unity ``Binned'' Prior}
-\author{Alex Kim}
+\author[a]{Alex Kim}
+\affiliation[a]{Lawrence Berkeley National Laboratory}
+\emailAdd{agkim@lbl.gov}
 %\date{}							% Activate to display a given date or no date
+
+\abstract{
+The Union3 ``Binned''-model posterior has been distributed for third-party cosmology analysis.  The posterior is calculated for
+a  prior that is not flat but rather has non-trivial structure in $\Omega_M$--$w_0$--$w_a$. 
+The posterior for a prior that is flat in $\Omega_M$--$w_0$--$w_a$ differs from the delivered posterior,
+favoring lower $\Omega_M$, more negative $w_0$, and more positive $w_a$.
+Users are reminded that a posterior cannot be used to approximate a likelihood without justification.
+}
 
 \begin{document}
 \maketitle
 
-The DESI plus SN results have folks in a tizzy.  Talking with DESI and David it is clear that DESI is incorporating Union3
-into its analyses incorrectly albeit in a subtle way;  it is of interest to explore how misapplication
-of Union3 could affect  DESI $w_0$--$w_a$  fits.
+\section{Introduction}
+Supernova, BAO, and CMB data are used to fit cosmological and dark-energy parameters in the DESI cosmology
+analysis \cite{2024arXiv240403002D}.  The fit to the flat $w_0$--$w_a$ model is discrepant with the $\Lambda$CDM
+model at the 3.5$\sigma$ level for the combination of DESI+CMB with Union3  \cite{2023arXiv231112098R}.
+Similar level discrepancies are found for the Pantheon+ \cite{2022ApJ...938..113S} and the DES-SN5YR\footnote{Data available at \url{https://github.com/des-science/DES-SN5YR.}}supernova compilations.
 
-In the Unity ``Binned'' model, the distance modulus
+%The DESI plus SN results have folks in a tizzy.  Talking with DESI and David it is clear that DESI is incorporating Union3
+%into its analyses incorrectly albeit in a subtle way;  it is of interest to explore how misapplication
+%of Union3 could affect  DESI $w_0$--$w_a$  fits.
+
+In the Union3 ``Binned'' model\footnote{This name is poorly chosen: there is no binning in this model.}, the distance modulus
 is the sum of the distance modulus of $\Omega_M=0.3$  $\Lambda$CDM plus a second-order spline specified by node values
-at a fixed set of 22 redshifts.  The priors on the node values are taken to be standard normal distributions\footnotemark[1].  
+at a fixed set of 22 redshifts.  The priors on the node values are taken to be standard normal distributions\footnote{The Union3 preprint states that the prior is flat.  However David has found looking back at his code
+that the prior is standard normal.}.  
 The posterior of the nodes is provided by David to DESI as values of
-$\mu_{\Lambda \text{CDM}}(z;\Omega_M=0.3) + n$ and the Hessian of the $n$ posterior,
+$\mu = \mu_{\Lambda \text{CDM}}(z;\Omega_M=0.3) + n$ and the Hessian of the $n$ posterior,
 where $z$ are the fixed redshifts of the spline and $n$ the node values at the posterior maximum.
-Note the misnomer, there is no binning in this model.
 
-\footnotetext[1]{The Union3 preprint states that the prior is flat.  However David has found looking back at his code
-that the prior is standard normal.}
 
-The $w_0$--$w_a$ cosmology is not embedded in the `Binned'' model but 
-it comes close; each $w_0$--$w_a$ luminosity distance is almost replicated
-by the `Binned'' model with node values that match the predictions of $w_0$--$w_a$  at the node redshifts, acknowledging that
+The DESI cosmology analysis takes the 22 $\mu$ values at the posterior maximum and treats them as data in the joint-probe analysis.  However, the likelihood for these data is never determined!
+Indeed the likelihood is non-analytic and computationally challenging to map out.  Instead, the likelihood is assumed to be proportional
+to the posterior without comment on how good this assumption is.
+
+The objective of this note is to explore how a change in the Union3 Binned prior can alter the posterior.  If the new posterior when used
+as a proxy for the likelihood causes significant change in the DESI joint analysis, then we can infer that the posterior is not
+necessarily a good approximation of the likelihood.
+
+\section{Union3 Binned Model and Posterior}
+Union3 considers several cosmological models, including  flat and open $\Lambda$CDM, $w$CDM, and $w_0w_a$CDM.
+In addition to these standard models,  Union3 analyzes a Binned model where the  distance modulus
+is the sum of the distance modulus of $\Omega_M=0.3$  $\Lambda$CDM plus a second-order spline specified by node values ($n$)
+at a fixed set of 22 redshifts ($z$).  The distance modulus of this model has significantly more flexibility 
+and hence retains more information about the underlying data compared to the physics-motivated models.
+The model can be (approximately) viewed as the measurement of distance modulus at 22 redshifts.
+It is this model that is used in the DESI analysis.
+
+Union3 uses Bayesian statistics for parameter estimation; as such it requires 
+priors on the node values. In the analysis presented in the paper, these priors are taken to be standard normal distributions
+$\mathcal{N}(n,1)$.
+
+The physics cosmologies (e.g.$w_0w_a$CDM)  are not embedded in the Binned model but 
+they come close; any cosmology's distance moduli at the node redshifts can be exactly replicated by the Binned model, acknowledging that
 there are
-inconsistencies between the physics and spline predictions between the nodes.  For the purposes of this work, I consider
-as an alternative  ``$w_0$--$w_a$'' model  the subspace/manifold of node values allowed by the true $w_0$--$w_a$
-model.  The transformation between the subspace parameters $\{\Omega_M, w_0, w_a\}$ and their corresponding
-node-value $n$ parameters is given by
+inconsistencies in between the nodes.  Neglecting this inconsistency, we say that the flat $w_0w_a$CDM model
+is a subspace of the Binned model defined by the mapping
 \begin{align}
 	n &= f(\Omega_M, w_0, w_a; z) \\
 	& \equiv \mu_{w_0 w_a \text{CDM}}(z;\Omega_M, w_0, w_a)  - \mu_{\Lambda \text{CDM}}(z;\Omega_M=0.3).
 \end{align}
 
-The standard normal prior on the nodes $\mathcal{N}(a,1)$ corresponds to a prior on the  $w_0$--$w_a$ manifold
+While the Union3 posterior (denoted as $p_U$) is for the 22-dimensional node space, it is of interest to examine the posterior values for the
+subspace occupied by the $w_0w_a$CDM
+model. 
+These values are presented as the red contours in Figure~\ref{fig:posterior}, where the contour levels are set to $\Delta \ln{p}=12.29$ which corresponds
+to a coverage probability of $(1-0.68)$ in 22 dimensions.
+The largest $\ln{p_U}$ in $w_0w_a$CDM is at the high end of $\Omega_M$ and the high--low
+part of $w_0$--$w_a$ space.  The 68\% confidence region covers a large volume of  $\Omega_Mw_0w_a$ 
+space.  Both $\Lambda$CDM and DESI's  BAO+CMB+Union3 flat $w_0$--$w_a$ best-fit lie within the 68\% confidence region.
+
+\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[width=5.5in]{../contour.png} 
+   \caption{Red: Contours of values of the Union3 posterior $\ln{p}_U$ (using the Hessian approximation) for a
+set of $\Omega_M$--$w_0$--$w_a$ values.
+   Blue: Contours of  $\ln{p_F}+\text{offset}$, which represent the shape of the posterior with a flat prior in  $\Omega_M$--$w_0$--$w_a$ space.   
+   The maximum of the $\ln{p}_U$  ($\ln{p}_F)$ posterior in this space is shown as the red (blue) star.
+   The contour levels are set to $\Delta \ln{p}=12.29$ which corresponds
+to a coverage probability of $(1-0.68)$ in 22 dimensions. 
+   These plots should not be mistaken as posterior plots in  $\Omega_M, w_0, w_a$. 
+   Points show the position of DESI's  BAO+CMB+Union3 flat $w_0$--$w_a$ best-fit 
+    and  $\Lambda$CDM.}
+   \label{fig:posterior}
+\end{figure}
+
+\section{Union3 Prior for $n$ in Terms of $\Omega_Mw_0w_a$}
+The Union3 prior for the Binned analysis is designed to keep distance moduli within reasonable proximity to a reasonable
+fiducial distance modulus function.  It is of interest to see what this prior looks like in terms of physics parameters.
+
+The standard normal prior on the nodes $\mathcal{N}(a,1)$ corresponds to a prior in  $\Omega_Mw_0w_a$ of
 \begin{equation}
-p_U(\Omega_M, w_0,w_a) = \mathcal{N}(f(\Omega_M, w_0, w_a; z),1)  \sqrt{\det{\left(J^T J\right)}},
+p(\Omega_M, w_0,w_a) = \mathcal{N}(f(\Omega_M, w_0, w_a; z),1)  \sqrt{\det{\left(J^T J\right)}},
 \end{equation}
 where $J$ is the Jacobian matrix of $f$ and $J^TJ$ is the Gram matrix.
-Surfaces of $\ln{p_U}(\Omega_M, w_0,w_a)$ values\ for a grid of values of $\Omega_M$
-are plotted in Figure~\ref{fig:priors}.  This prior is not flat in  $\Omega_M, w_0, w_a$-space.
+Surfaces of $\ln{p}(\Omega_M, w_0,w_a)$ values\ for a grid of values of $\Omega_M$
+are plotted in Figure~\ref{fig:priors}.  This prior is not flat in  $\Omega_M, w_0, w_a$.
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
    \includegraphics[width=5.5in]{../result.png} 
-   \caption{Surfaces of $\ln{p_U}(\Omega_M, w_0,w_a)$  for a grid of values
+   \caption{Surfaces of $\ln{p}(\Omega_M, w_0,w_a)$  for a grid of values
  $w_0$--$w_a$ and $\Omega_M$.    The star (in the upper-left plot) shows the location of the maximum.
    Points show the position of the best fit  DESI+Union3
    result and  $\Lambda$CDM.}
    \label{fig:priors}
 \end{figure}
 
-Values of the Union3 posterior (using the Hessian approximation) for a
-set of $\Omega_M$--$w_0$--$w_a$ values
-are shown as the red contours in Figure~\ref{fig:posterior}.\footnotemark[2]
-This posterior, denoted as $p_U$, has the standard-normal prior baked in. 
-The largest $\ln{p_U}$ on the manifold (shown as a red star) is at the high end of $\Omega_M$ and the high--low
-part of $w_0$--$w_a$ space.  
-Supernova data alone do not significantly constrain the $w_0$--$w_a$ (the plotted contours do not correspond
-to standard confidence intervals).
 
-\footnotetext[2]{Keep in mind that the Gaussian approximation of $p_U$ may not characterize the true posterior at all points of
-phase space including the most probable value of $p_F$.}
 
 %DESI uses the node mean values as the data and the posterior as is error matrix.
 %From that perspective, Figure~\ref{fig:posterior} shows the on the $w_0$--$w_a$ manifold
 %subspace
 %and should not be mistaken as a plot of a posterior.
+\section{Posterior for a Flat  $\Omega_Mw_0w_a$  Prior}
 
-Union3 could have used a different prior for the nodes.  Of interest is a
-prior that is flat in $\Omega_M$--$w_0$--$w_a$ on the manifold.
-The corresponding posterior is related to the original posterior by
+Union3 could have used a different prior for the nodes, in particular one
+that is flat in $\Omega_Mw_0w_a$.
+Such a posterior would be related to the original posterior by
 \begin{equation}
-p_F(n) \propto \frac{p_U(n)}{\mathcal{N}(n,1)  \sqrt{\det{\left(J^T J\right)}}}.
+p_F(n) \propto \frac{p_U(n)}{\mathcal{N}(n,1)  \sqrt{\det{\left(J^T J\right)}}}
 \end{equation}
-I haven't specified what the prior is off of the manifold.  One choice is $p(n)=0$ under the assumption
-of a $w_0$--$w_a$ cosmology.  The resulting posterior, however, would not easily be incorporated into the DESI analysis
-and useful information encoded in the 22-dimensional parameters would be lost.
+in the $w_0w_a$ space.
+Outside that space a choice could be $p(n)=0$ under the assumption
+of a flat $w_0w_a$ cosmology.  The resulting posterior, however, would not easily be incorporated into the DESI analysis
+and valuable information form the SN data would be lost.
 Preferable is a prior that is continuous over the full space and hence more applicable for DESI,
 perhaps through analytic continuation of $\sqrt{\det{\left(J^T J\right)}}$ into the larger space.
+The specific choice is not important for the purposes of this note.
 
-
-Values of the posterior $p_F$ assuming a flat
-prior in $\Omega_M$--$w_0$--$w_a$  are shown as blue contours in Figure~\ref{fig:posterior}.\footnotemark[2]
+A change in prior will shift the posterior for $n$.   We focus on the new posterior values for the subspace occupied by
+the $w_0w_a$CDM model.  Values of $\ln{p}_F$ (plus an additive constant)  are shown for $\Omega_Mw_0w_a$ as blue contours in Figure~\ref{fig:posterior}.\footnote{Keep in mind that the Gaussian approximation of $p_U$ may not characterize the true posterior at all points of
+phase space including the most probable value of $p_F$.}
 The largest value of $\ln{p}_F$ (shown as a blue star) is on the low end of $\Omega_M$ and the  low--high
-part of $w_0$--$w_a$ space.  
-The
-change in prior does not result in a statistically important change in the $\ln{p}-\ln{p}_\text{max}$ values on the manifold;
-Union3 SN data alone do not strongly constrain the 22-dimensional node space.
-Nevertheless, we see that a change in prior can result in a large shift in the posterior.
+part of $w_0$--$w_a$ space.
+The blue star lies close to the 68\% confidence interval of the original posterior so the shift is not large in a statistical sense
+though the shift from the original  red star is large in an absolute sense.
 
-
-\begin{figure}[htbp] %  figure placement: here, top, bottom, or page
-   \centering
-   \includegraphics[width=5.5in]{../contour.png} 
-   \caption{Red: Contour plot of values of the Union3 posterior $\ln{p}_U(f(\Omega_M, w_0, w_a; z))$ (using the Hessian approximation) for a
-set of $\Omega_M$--$w_0$--$w_a$ values.
-   Blue: Contours of  $\ln{p_F}(f(\Omega_M, w_0, w_a; z))$ values, which represent a new Union3 posterior with a flat prior in  $\Omega_M$--$w_0$--$w_a$ space.   
-   The maximum of the $\ln{p}_U$  ($\ln{p}_F)$ posterior within the manifold is shown as the red (blue) star.
-   The contour levels are set to $\Delta \ln{p}=12.29$ appropriate for the 68\% confidence region in the 22-dimensional
-   space for which the posterior applies. 
-   These plots should not be mistaken as posterior plots in  $\Omega_M, w_0, w_a$. 
-   Points show the position of the best fit DESI DESI+Union3
-   result and  $\Lambda$CDM.}
-   \label{fig:posterior}
-\end{figure}
-
-DESI takes the Union3 ``Binned"-model parameter posterior output as data, interprets the covariance matrix as the Gaussian uncertainty,
-and includes them in a larger likelihood  to fit the $w_0$--$w_a$ flat cosmology model.   It thus seems appropriate
-to use a Union3 $p_F$ rather than $p_U$ posterior, which would (probably) shift DESI+Union3 contours toward $\Lambda$CDM.
-Though the shift may be statistically insignificant when inferring $w_0$--$w_a$ with SN data alone it could have an important effect in the joint analysis,
+\section{DESI}
+DESI  adopts uniform priors for $\Omega_Mw_0w_a$ in its cosmology analysis.
+Nevertheless DESI approximates the Union3 likelihood with a posterior based on a prior that is not uniform in $\Omega_Mw_0w_a$
+and that is shown to be shifted relative to a posterior with a uniform prior.
+Though the shift may be statistically insignificant in the context of the $w_0w_a$LCDM model using SN data only,  it could have an important effect in the joint analysis
 where the larger parameter space plays a non-trivial role in breaking degeneracies.
 
-What is the solution? Of course the best thing would be to transport
-the supernova-cosmology likelihood into the joint analysis.  This may not be a crazy idea, the likelihood is well documented
+
+What is the solution? The best thing would be to transport
+the supernova-cosmology likelihood into the joint analysis (or conversely transport DESI data into Unity). 
+This may not be a crazy idea, the likelihood is well documented
 and I have seen the David's code and it is fairly straightforward.  David uses STAN  (HMC
 with no U-Turn sampling) to run the MCMC.
 Short of that, we should ask
 David to run Union3 with a new prior considering that the Gaussian approximation may not accurately describe the provided posterior, 
 What the new prior should be is something to think about.  
+
+
+\bibliographystyle{JHEP}
+\bibliography{apj-jour,ref}
+
+
 \end{document}  
