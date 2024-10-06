@@ -98,7 +98,7 @@ space.  Both $\Lambda$CDM and DESI's  BAO+CMB+Union3 flat $w_0$--$w_a$ best-fit 
    \includegraphics[width=5.5in]{../contour.png} 
    \caption{Red: Contours of values of the Union3 posterior $\ln{p}_U$ (using the Hessian approximation) for a
 set of $\Omega_M$--$w_0$--$w_a$ values.
-   Blue: Contours of  $\ln{p_F}+\text{offset}$, which represent the shape of the posterior with a flat prior in  $\Omega_M$--$w_0$--$w_a$ space.   
+   Blue: Contours of  $\ln{p_F}$, which represent the shape of the posterior with a flat DESI prior in  $\Omega_M$--$w_0$--$w_a$ space.   
    The maximum of the $\ln{p}_U$  ($\ln{p}_F)$ posterior in this space is shown as the red (blue) star.
    The contour levels are set to $\Delta \ln{p}=12.29$ which corresponds
 to a coverage probability of $(1-0.68)$ in 22 dimensions. 
@@ -140,11 +140,13 @@ are plotted in Figure~\ref{fig:priors}.  This prior is not flat in  $\Omega_M, w
 
 Union3 could have used a different prior for the nodes, in particular one
 that is flat in $\Omega_Mw_0w_a$.
+The DESI prior is $\Omega_M \in [0.01,0.99]$, $w_0 \in [-3,1]$, $w_a \in [-3,2]$.
 Such a posterior would be related to the original posterior by
 \begin{equation}
-p_F(n) \propto \frac{p_U(n)}{\mathcal{N}(n,1)  \sqrt{\det{\left(J^T J\right)}}}
+p_F(n) = \frac{p_U(n)}{(0.98)(4)(5) \mathcal{N}(n,1)  \sqrt{\det{\left(J^T J\right)}}}
 \end{equation}
 in the $w_0w_a$ space.
+
 Outside that space a choice could be $p(n)=0$ under the assumption
 of a flat $w_0w_a$ cosmology.  The resulting posterior, however, would not easily be incorporated into the DESI analysis
 and valuable information form the SN data would be lost.
@@ -153,7 +155,7 @@ perhaps through analytic continuation of $\sqrt{\det{\left(J^T J\right)}}$ into 
 The specific choice is not important for the purposes of this note.
 
 A change in prior will shift the posterior for $n$.   We focus on the new posterior values for the subspace occupied by
-the $w_0w_a$CDM model.  Values of $\ln{p}_F$ (plus an additive constant)  are shown for $\Omega_Mw_0w_a$ as blue contours in Figure~\ref{fig:posterior}.\footnote{Keep in mind that the Gaussian approximation of $p_U$ may not characterize the true posterior at all points of
+the $w_0w_a$CDM model.  Values of $\ln{p}_F$ are shown for $\Omega_Mw_0w_a$ as blue contours in Figure~\ref{fig:posterior}.\footnote{Keep in mind that the Gaussian approximation of $p_U$ may not characterize the true posterior at all points of
 phase space including the most probable value of $p_F$.}
 The largest value of $\ln{p}_F$ (shown as a blue star) is on the low end of $\Omega_M$ and the  low--high
 part of $w_0$--$w_a$ space.

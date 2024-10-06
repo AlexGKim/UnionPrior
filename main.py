@@ -36,10 +36,12 @@ def pdf():
 
 	# w0s = numpy.linspace(-1.2,-0.2,3)
 	# was =  numpy.linspace(-2, 2 ,3)
-	w0s = numpy.linspace(-1.15,-0.35,25)
-	was =  numpy.linspace(-4, 2, 30)	
+	w0s = numpy.linspace(-1.1,-0.3,20)
+	was =  numpy.linspace(-7, 0, 20)	
+	# was =  numpy.linspace(-0, 1, 20)	
+
 	Om0s = numpy.linspace(0.3-.05+0.025, 0.3+.05+0.025,9)
-	Om0s = numpy.linspace(0.25, 0.45,9)
+	Om0s = numpy.linspace(0.3, 0.5,9)
 
 	cosmo_0 = jc.Planck15(Omega_c = 0.3, Omega_b=0, w0=-1., wa=0.)
 	dL = (1+zs) * jc.background.transverse_comoving_distance(cosmo_0 ,aas) # In [Mpc/h]
@@ -97,7 +99,7 @@ def pdf():
 
 		# _holder = lnp_union[Om0s_index,:,:]+ logomega[Om0s_index,:,:]
 		# levels=zero_level+_holder.max()
-		CS2 = ax.contour(X, Y, lnp_2[Om0s_index,:,:], levels=levels2,colors='blue')
+		CS2 = ax.contour(X, Y, lnp_2[Om0s_index,:,:]-numpy.log(.98*5*4), levels=levels2,colors='blue')
 		ax.clabel(CS2, CS2.levels, inline=True, fontsize=8)
 
 		# max_value = lnp_union[Om0s_index,:,:].max()
@@ -155,7 +157,6 @@ def pdf():
 		if local_max_index[0] == Om0s_index:
 			max_x = X[local_max_index[1], local_max_index[2]]
 			max_y = Y[local_max_index[1], local_max_index[2]]
-			print(max_x,max_y)
 			ax.scatter(max_x,max_y,label="Maximum",s=32,marker="*")
 		ax.legend()
 	fig.suptitle(r"$\ln{w}$")
@@ -166,7 +167,6 @@ def pdf():
 
 	# plt.show()
 
-	# numpy.save("omega",omega)
 	numpy.save("lnp_2",lnp_2)	
 	numpy.save("lnp_union",lnp_union)
 	numpy.save("logomega",logomega)
