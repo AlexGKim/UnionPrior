@@ -80,12 +80,15 @@ def pdf():
 	zero_level = numpy.arange(-4,0.001,1)
 
 	max_value = lnp_union.max()
+	print("lnp max ",max_value)
 	one_68 = chi2.isf(1-.6826894921370888,3)
 	one_68_full = chi2.isf(1-.6826894921370888,22)	
 	local_max_index = numpy.where(lnp_union==max_value)
 	levels = zero_level*one_68_full/2 #+ max_value
 
 	max_value2 = lnp_2.max()
+	print("lnp 2 max ",max_value2-numpy.log(.98*5*4))
+	wef
 	local_max_index2 = numpy.where(lnp_2==max_value2)
 
 	levels2 = zero_level*one_68_full/2 #+ max_value2
