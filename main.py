@@ -88,7 +88,6 @@ def pdf():
 
 	max_value2 = lnp_2.max()
 	print("lnp 2 max ",max_value2-numpy.log(.98*5*4))
-	wef
 	local_max_index2 = numpy.where(lnp_2==max_value2)
 
 	levels2 = zero_level*one_68_full/2 #+ max_value2
@@ -156,11 +155,11 @@ def pdf():
 		ax.set_xlabel(r"$w_0$")
 		ax.set_ylabel(r"$w_a$")
 		ax.scatter(desi[0],desi[1],label="DESI",color='green')
-		ax.scatter(-1,0,label=r"$\Lambda$CDM",color='brown')
-		if local_max_index[0] == Om0s_index:
-			max_x = X[local_max_index[1], local_max_index[2]]
-			max_y = Y[local_max_index[1], local_max_index[2]]
-			ax.scatter(max_x,max_y,label="Maximum",s=32,marker="*")
+		# ax.scatter(-1,0,label=r"$\Lambda$CDM",color='brown')
+		# if local_max_index[0] == Om0s_index:
+		# 	max_x = X[local_max_index[1], local_max_index[2]]
+		# 	max_y = Y[local_max_index[1], local_max_index[2]]
+		# 	ax.scatter(max_x,max_y,label="Maximum",s=32,marker="*")
 		ax.legend()
 	fig.suptitle(r"$\ln{w}$")
 	fig.tight_layout()
@@ -170,9 +169,9 @@ def pdf():
 
 	# plt.show()
 
-	numpy.save("lnp_2",lnp_2)	
-	numpy.save("lnp_union",lnp_union)
-	numpy.save("logomega",logomega)
+	# numpy.save("lnp_2",lnp_2)	
+	# numpy.save("lnp_union",lnp_union)
+	# numpy.save("logomega",logomega)
 
 
 
