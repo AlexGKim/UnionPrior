@@ -30,7 +30,8 @@ The posterior is calculated for
 a  prior that is not flat but rather has non-trivial structure in $\Omega_M$--$w_0$--$w_a$. 
 The distributed posterior
 and that for a prior that is flat in $\Omega_M$--$w_0$--$w_a$ are shifted relative to each other, but not
-at a level that is  statistically significant.   We show how the posterior can be used in a multi-probe analysis.
+at a level that is  statistically significant.   We show how the Union3 posterior can be used
+as a prior in a multi-probe analysis.
 }
 
 \begin{document}
@@ -105,11 +106,11 @@ the constraining power to exclude standard cosmology.
 set of $\Omega_M$--$w_0$--$w_a$ values, where $c= 11\ln{(2\pi)} + 0.5\ln({\det{C_U})}$.  The constant $c$ contains the
 normalization of the Normal distribution, so $\ln{p_U}+c$  is equivalent to  $-\chi^2/2$.   
    Blue: Contours of  $\ln{p_F}(n)  +c  $, which represent the shape of the posterior with a flat DESI prior in  $\Omega_M$--$w_0$--$w_a$ space.   
+   The blue contours  also represent the Union3 contribution to the posterior in a joint fit of a flat $w_0w_a$CDM cosmology with DESI priors.
    The maximum of the $\ln{p}_U$  ($\ln{p}_F)$ posterior in this space is shown as the red (blue) star.  (The absolute maxima
    lie outside this space.)
    The contour levels are set to $\Delta \ln{p}=12.29$ corresponding to
    a coverage probability of $(1-0.68)$ in 22 dimensions. 
-   These plots should not be mistaken as posterior plots for  $\Omega_M, w_0, w_a$. 
    Points show the position of DESI's  BAO+CMB+Union3 flat $w_0w_a$ best-fit 
     and  $\Lambda$CDM.}
    \label{fig:posterior}
@@ -181,33 +182,41 @@ Within the scope of studying $w_0w_a\Lambda$CDM, this inconsistency does not cha
 If anything, the inconsistent prior biases results to be more consistent with $\Lambda$CDM.
 
 \section{Union3 in Joint Analyses}
-Union3 results can be combined with other datasets in joint analyses.
+Union3 results can be combined with other datasets in multi-probe analyses.
 Consider independent data $d$ used to fit a model parameterized by $\theta$
 that predicts distance moduli at the ``Binned'' model redshifts as $n=f(\theta)$.
 The Union3 posterior can be used as a prior $p_U$ for $n$.  The posterior of the joint analysis is
 \begin{align}
 p(\theta|d) &\propto \int  p(d|n,\theta)p(\theta|n)p_U(n) dn\\
-&= p(d|f(\theta),\theta) \mathcal{N}(\hat{n}-f(\theta),C_U).
+&=  p(d|f(\theta),\theta) \frac{p_U(n)} {\sqrt{\det{J^TJ}}}, \label{eq:correct}
 \end{align}
+where $J$ is the Jacobian of $f$.
 Implicit in the above is the prior
-that went into calculating $p_U$.
-Those interested in a joint analysis using a different prior can multiply the distributed Union3 posterior by the ratio of the desired
-and fiducial priors.
+that went into calculating $p_U$; other priors can be considered by factoring in their ratios with respect to the 
+fiducial prior.
 
+Consider a joint fit of the  $w_0w_a$CDM model with DESI priors.  The Union3 contribution to the posterior turns out to be
+what has already been presented in 
+Equation~\ref{eq:flatprior} and plotted as the blue contours in
+Figure~\ref{fig:posterior} 
 
-The DESI paper presents things differently.  The Union3 posterior best-fit parameters are data and the covariance matrix
-their measurement uncertainty.  The posterior is
+The DESI paper takes a different approach.  The Union3 posterior best-fit parameters are thought of as estimators and used as
+ data.  The posterior is
 \begin{align}
-p(\theta | \hat{n}, d) & \propto p(d| \theta) p( \hat{n}| \theta) p(\theta) \\
-& \approx p(d| \theta) \mathcal{N}( \hat{n}-f(\theta) , C_U) p(\theta),
+p(\theta | d, \hat{n}) & \propto p(d| \theta) p( \hat{n}| \theta) p(\theta) \\
+& \approx p(d| \theta) \mathcal{N}( \hat{n}-f(\theta) , C_U) p(\theta) \label{eq:DESI}.
 \end{align}
-where the approximation is $p( \hat{n}| \theta) \approx \mathcal{N}( \hat{n}-f(\theta) , C_U)$.
-The math of the two approaches are identical up to the prior term $p(\theta)$.  What makes
-the DESI analysis inconsistent is its  prior that differs from that of Union3.
-Problems would have been avoided if the likelihood term $ p( \hat{n}| \theta)$ were not replaced by $\mathcal{N}( \hat{n}-f(\theta) , C_U)$.
-That is easier said than done: the likelihood is non-analytic and non-trivial to map.
+The  likelihood
+ term $ p( \hat{n}| \theta)$ is non-analytic and non-trivial to map
+(\cite{2013ApJ...764..116W} presents a methodology for  likeliood-free supernova-cosmology analysis).
+Approximating the likelihood
+by $\mathcal{N}( \hat{n}-f(\theta) , C_U)$ leads to an inaccurate determination
+of the posterior, my an amount that we don't attempt to calculate in this note.
+It is eminently simpler and safer to treat the Union3 parameters and their posterior as such.
 
-It is eminently safer to treat parameters and their posteriors as such.
+Caution should be exercised when multi-probe analyses favor regions far from the Union3 best fit  where the Hessian approximation of the
+posterior may be less secure, or in regions where $\sqrt{\det{J^TJ}}$ has structure.  For example, while the plotted contours in Figure~\ref{fig:priors}
+appear to be consistent with a Gaussian surface, the consistency does not persist at lower contour levels particularly toward the upper right (low $w_0$ high $w_a$) of the plot.
 
 \section{Conclusions}
 Multi-probe  analysis is required to get the most cosmological inference out of the plethora of available data. 
@@ -217,13 +226,16 @@ fraction of
 the community to explore the data.
 
 As such, Union3 has released a posterior for a general model that summarizes the Hubble diagram inferred from its data.
-Despite its simplicity, it is important for users to understand the assumptions made in the model and the priors used
-in generating its parameter posterior.  Then they can incorporate Union3 into their own analyses.
+The model is parameterized by distance moduli on a grid of redshifts and is (approximately) a superspace that
+contains a broad range of models.     The posterior of any embedded model can be
+extracted from the  ``Binned''-model posterior and used as a prior in subsequent analyses.
 
-At this point, we know of no case where the misapplication of Union3 has statistically significant consequences.
-However as a broad range cosmological models with many degrees of freedom are being
-explored, there is no guarantee that approximating the posterior maximum's likelihood by the posterior itself
-will not have negative consequences.
+Despite its simplicity, it is important for users to understand the assumptions made in the model and the priors used
+in generating its parameter posterior.  Then they can properly incorporate Union3 into their own analyses.
+
+Establishing a standard flexible model and prior though which all experiments can 
+summarize their results would facilitate proper usage by the community.
+
 
 \bibliographystyle{JHEP}
 \bibliography{apj-jour,ref}
