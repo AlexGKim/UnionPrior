@@ -40,7 +40,7 @@ def pdf():
 	was =  numpy.linspace(-7, 0, 20)	
 	# was =  numpy.linspace(-0, 1, 20)	
 
-	Om0s = numpy.linspace(0.3-.05+0.025, 0.3+.05+0.025,9)
+	# Om0s = numpy.linspace(0.3-.05+0.025, 0.3+.05+0.025,9)
 	Om0s = numpy.linspace(0.3, 0.5,9)
 
 	cosmo_0 = jc.Planck15(Omega_c = 0.3, Omega_b=0, w0=-1., wa=0.)
@@ -56,7 +56,7 @@ def pdf():
 
 	J_nodes = jax.jacfwd(nodes)
 
-	if True:
+	if False:
 		lnp_2 = numpy.load("lnp_2.npy")	
 		lnp_union = numpy.load("lnp_union.npy")
 		logomega = numpy.load("logomega.npy")		
@@ -72,8 +72,7 @@ def pdf():
 					logomega[i,k,j] = -0.5 * (N**2).sum() + 0.5 * jnp.log(jnp.linalg.det(jnp.dot(J.T,J)))
 					lnp_union[i,k,j] = -0.5 * ((N.T-n0) @ invcov @ (N-n0))
 
-		lnp_2 = lnp_union - logomega 
-
+		lnp_2 = lnp_union - logomega -numpy.log(.98*5*4)
 
 
 	X, Y = numpy.meshgrid(w0s, was)
@@ -81,16 +80,19 @@ def pdf():
 
 	max_value = lnp_union.max()
 	print("lnp max ",max_value)
-	one_68 = chi2.isf(1-.6826894921370888,3)
-	one_68_full = chi2.isf(1-.6826894921370888,22)	
-	local_max_index = numpy.where(lnp_union==max_value)
-	levels = zero_level*one_68_full/2 #+ max_value
+	# one_68 = chi2.isf(1-.6826894921370888,3)
+	# one_68_full = chi2.isf(1-.6826894921370888,22)	
+	# local_max_index = numpy.where(lnp_union==max_value)
+	# levels = zero_level*one_68_full/2 #+ max_value
+
+	levels = -chi2.isf([1-0.9545, 1-0.9167, 1-0.8427, 1-.6827],22)/2
 
 	max_value2 = lnp_2.max()
-	print("lnp 2 max ",max_value2-numpy.log(.98*5*4))
+	print("lnp 2 max ",max_value2)
 	local_max_index2 = numpy.where(lnp_2==max_value2)
 
 	levels2 = zero_level*one_68_full/2 #+ max_value2
+	levels2= levels
 
 	fig, axs = plt.subplots(3,3, figsize=(12,12))
 	for Om0s_index, ax in enumerate(axs.flat):
@@ -101,7 +103,7 @@ def pdf():
 
 		# _holder = lnp_union[Om0s_index,:,:]+ logomega[Om0s_index,:,:]
 		# levels=zero_level+_holder.max()
-		CS2 = ax.contour(X, Y, lnp_2[Om0s_index,:,:]-numpy.log(.98*5*4), levels=levels2,colors='blue')
+		CS2 = ax.contour(X, Y, lnp_2[Om0s_index,:,:], levels=levels2,colors='blue')
 		ax.clabel(CS2, CS2.levels, inline=True, fontsize=8)
 
 		# max_value = lnp_union[Om0s_index,:,:].max()
@@ -168,10 +170,9 @@ def pdf():
 	fig.savefig('result.png')
 
 	# plt.show()
-
-	# numpy.save("lnp_2",lnp_2)	
-	# numpy.save("lnp_union",lnp_union)
-	# numpy.save("logomega",logomega)
+	numpy.save("lnp_2_new",lnp_2)	
+	numpy.save("lnp_union_new",lnp_union)
+	numpy.save("logomega_new",logomega)
 
 
 

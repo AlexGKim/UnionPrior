@@ -97,8 +97,7 @@ subspace occupied by the $w_0w_a$CDM
 model. 
 Values of $\ln{p_U}$ (using the Hessian approximation given by the covariance matrix $C_U$) for a
 set of $\Omega_M$--$w_0$--$w_a$ values
- are presented as the red contours in Figure~\ref{fig:posterior}, where the levels are for  $\Delta \ln{p}=12.29$ corresponding to
-a coverage probability of $(1-0.68)$ in 22 dimensions.
+ are presented as the red contours in Figure~\ref{fig:posterior}, where the levels are set to 68.27\%, 84.28\%, 91.67\%, and 95.55\% confidence intervals..
 The largest $\ln{p_U}$ in $w_0w_a$CDM is at $\Omega_M\approx 0.425$, $w_0 \approx -0.55$, and $w_a \approx -3.7$. $\Lambda$CDM at $\Omega_M \approx 0.35$ is within the 68\% confidence region.
 Supernova data alone prefer high $\Omega_M$, a low absolute value of $w_0$, and a negative $w_a$, but do not have
 the constraining power to exclude standard cosmology.
@@ -113,8 +112,7 @@ normalization of the Normal distribution, so $\ln{p_U}+c$  is equivalent to  $-\
    The blue contours  also represent the Union3 contribution to the posterior in a joint fit of a flat $w_0w_a$CDM cosmology with DESI priors.
    The maximum of the $\ln{p}_U$  ($\ln{p}_F)$ posterior in this space is shown as the red (blue) star.  (The absolute maxima
    lie outside this space.)
-   The contour levels are set to $\Delta \ln{p}=12.29$ corresponding to
-   a coverage probability of $(1-0.68)$ in 22 dimensions. 
+   The contour levels are set to 68.27\%, 84.28\%, 91.67\%, and 95.55\% confidence intervals. 
    Points show the position of DESI's  BAO+CMB+Union3 flat $w_0w_a$ best-fit 
     and  $\Lambda$CDM.}
    \label{fig:posterior}
@@ -203,6 +201,7 @@ The DESI paper takes a different approach.  The Union3 posterior best-fit parame
  data.  The posterior is
 \begin{align}
 p(\theta | d, \hat{n}) & \propto p(d| \theta) p( \hat{n}| \theta) p(\theta) \\
+& \approx p(d| \theta) p_U(\hat{n}) p(\theta)  \\
 & \approx p(d| \theta) \mathcal{N}( \hat{n}-f(\theta) , C_U) p(\theta) \label{eq:DESI}.
 \end{align}
 The  likelihood
@@ -211,11 +210,14 @@ The  likelihood
 Approximating the likelihood
 by $\mathcal{N}( \hat{n}-f(\theta) , C_U)$ leads to an inaccurate determination
 of the posterior, by an amount that I don't attempt to calculate in this note.
+Nevertheless, the posterior given in Equation~\ref{eq:correct} is related to the reported DESI result Equation~\ref{eq:DESI}
+by a shift from the red to blue contours in Figure~\ref{fig:posterior}, which would induce a slight shift away from $\Lambda$CDM
+and toward higher $\Omega_M$.
 It is eminently simpler and safer to treat the Union3 parameters and their posterior as such, and not as data.
 
 Caution should be exercised when multi-probe analyses favor regions far from the Union3 best fit  where the Hessian approximation of the
 posterior may be less secure, or in regions where $\sqrt{\det{J^TJ}}$ has structure.  For example, while the plotted contours in Figure~\ref{fig:priors}
-appear to be consistent with a Gaussian surface, the consistency does not persist at lower contour levels particularly toward the upper right (low $w_0$ high $w_a$) of the plot.
+appear to be consistent with a Gaussian surface, this does not persist at lower contour levels even at high $w_a$ within the ``Binned'' posterior 68\% confidence region.
 
 \section{Conclusions}
 \label{sec:conclusions}
