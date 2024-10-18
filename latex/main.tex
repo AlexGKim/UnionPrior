@@ -17,7 +17,7 @@
 %SetFonts
 
 
-\title{Unity ``Binned'' Prior}
+\title{Union3 ``Binned''-Model Posterior}
 \author[a]{Alex Kim}
 \affiliation[a]{Lawrence Berkeley National Laboratory}
 \emailAdd{agkim@lbl.gov}
@@ -80,7 +80,7 @@ The results of this model fit are now being used by the community.
 
 Union3 uses Bayesian statistics for parameter estimation; as such it requires 
 priors on the node values. In the analysis presented in the paper, these priors are taken to be standard normal distributions
-$p_U(n)=  \mathcal{N}(n,1)$.
+$p^\text{Union3}_\text{prior}(n)=  \mathcal{N}(n,1)$.
 
 The physics cosmologies (e.g.\ $w_0w_a$CDM)  are not embedded in the ``Binned'' model but 
 they come close; any cosmology's distance moduli at the node redshifts can be exactly replicated by the ``Binned'' model, acknowledging that
@@ -105,10 +105,10 @@ the constraining power to exclude standard cosmology.
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
    \includegraphics[width=5.5in]{../contour.png} 
-   \caption{Red: Contours of values of the Union3 posterior $\ln{p_U}(n)+c$ for a
+   \caption{Red: Contours of values of the Union3 posterior $\ln{p_U}+c$ for a
 set of $\Omega_M$--$w_0$--$w_a$ values, where $c= 11\ln{(2\pi)} + 0.5\ln({\det{C_U})}$.  The constant $c$ contains the
 normalization of the Normal distribution, so $\ln{p_U}+c$  is equivalent to  $-\chi^2/2$.   
-   Blue: Contours of  $\ln{p_F}(n)  +c  $, which represent the shape of the posterior with a flat DESI prior in  $\Omega_M$--$w_0$--$w_a$ space.   
+   Blue: Contours of  $\ln{p_F} +c  $, which represent the shape of the posterior with a flat DESI prior in  $\Omega_M$--$w_0$--$w_a$ space.   
    The blue contours  also represent the Union3 contribution to the posterior in a joint fit of a flat $w_0w_a$CDM cosmology with DESI priors.
    The maximum of the $\ln{p}_U$  ($\ln{p}_F)$ posterior in this space is shown as the red (blue) star.  (The absolute maxima
    lie outside this space.)
@@ -128,22 +128,23 @@ fiducial distance modulus function.  It is of interest to see what this prior, w
 space, looks like in terms of cosmological and dark-energy parameters.
 
 The standard normal prior on the nodes $\mathcal{N}(a,1)$ corresponds to a prior in  $\Omega_M$--$w_0$--$w_a$ of
-\begin{equation}
-p(\Omega_M, w_0,w_a) = \mathcal{N}(f(\Omega_M, w_0, w_a; z),1)  \sqrt{\det{\left(J^T J\right)}},
-\end{equation}
+\begin{align}
+p^\text{Union3}_\text{prior}(\Omega_M, w_0,w_a)  & =p^\text{Union3}_\text{prior}(n=f(\Omega_M, w_0, w_a; z))  \sqrt{\det{\left(J^T J\right)}} \\
+& = \mathcal{N}(f(\Omega_M, w_0, w_a; z),1)  \sqrt{\det{\left(J^T J\right)}},
+\end{align}
 where $J$ is the Jacobian matrix of $f$ and $J^TJ$ is the Gram matrix.
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
    \includegraphics[width=5.5in]{../result.png} 
    \caption{Surfaces of the Union3 prior, originally specified in terms of node parameters, transformed to the $w_0w_a$CDM parameterization
-   $\ln{p}(\Omega_M, w_0,w_a)$,  for a grid of values
+   $\ln{p^\text{Union3}_\text{prior}}(\Omega_M, w_0,w_a)$,  for a grid of values
  $w_0$--$w_a$ and $\Omega_M$.   
    Points show the position of the BAO+CMB+Union3 flat $w_0w_a$ best-fit .}
    \label{fig:priors}
 \end{figure}
 
-Surfaces   $\ln{p}(\Omega_M, w_0,w_a)$ values\ for a grid of $\Omega_M$--$w_0$--$w_a$ are shown in
+Surfaces of  $\ln{p^\text{Union3}_\text{prior}}(\Omega_M, w_0,w_a)$ values\ for a grid of $\Omega_M$--$w_0$--$w_a$ are shown in
 Figure~\ref{fig:priors}.   The prior is not uniform in  $\Omega_M$--$w_0$--$w_a$.
 The posterior shown in Figure~\ref{fig:posterior} has a different shape,
 demonstrating that it is not being driven by the prior.  Nevertheless,
@@ -159,13 +160,13 @@ by an appreciable amount.
 Union3 could have used a different prior for the nodes, in particular one
 that is flat in $\Omega_M$--$w_0$--$w_a$.
 The DESI prior is $\Omega_M \in \mathcal{U}(0.01,0.99)$, $w_0 \in \mathcal{U}(-3,1)$, $w_a \in \mathcal{U}(-3,2)$.
-This prior is related to the original posterior by
+This posterior for this prior is related to the original posterior by
 \begin{equation}
 p_F(n) = \frac{p_U(n)}{(0.98)(4)(5) \mathcal{N}(n,1)  \sqrt{\det{\left(J^T J\right)}}}.
 \label{eq:flatprior}
 \end{equation}
 
-For the set of $n$ that are not allowed by $w_0w_a$CDM,  a choice for the prior could be $p(n)=0$.  The resulting posterior
+For the set of $n$ that are not allowed by $w_0w_a$CDM,  a choice for the prior could be $p_\text{prior}(n)=0$.  The resulting posterior
 would effectively be equivalent to that of the Union3 $w_0w_a$CDM model fit.
 Preferable is a prior that is continuous over the full space and of more general applicability,
 perhaps through analytic continuation of $\sqrt{\det{\left(J^T J\right)}}$ into the full space.
@@ -182,13 +183,13 @@ posterior's 68\% confidence regions.  An interesting feature is that the two pos
 Union3 results can be combined with other datasets in multi-probe analyses.
 Consider independent data $d$ used to fit a model parameterized by $\theta$
 that predicts distance moduli at the ``Binned'' model redshifts as $n=f(\theta)$.
-The Union3 posterior can be used as a prior $p_U$ for $n$.  The posterior of the joint analysis is
+The Union3 posterior can be used as a prior for $n$.  The posterior of the joint analysis is
 \begin{align}
 p(\theta|d) &\propto \int  p(d|n,\theta)p(\theta|n)p_U(n) dn\\
 &=  p(d|f(\theta),\theta) \frac{p_U(f(\theta))} {\sqrt{\det{J^TJ}}}, \label{eq:correct}
 \end{align}
 where $J$ is the Jacobian of $f$.
-Implicit in the above is the prior
+Implicit in the above is the Union3 prior
 that went into calculating $p_U$; other priors can be considered by factoring in their ratios with respect to the 
 original prior.
 
@@ -200,9 +201,9 @@ Figure~\ref{fig:posterior}
 The DESI paper takes a different approach.  The Union3 posterior best-fit parameters are thought of as estimators and used as
  data.  The posterior is
 \begin{align}
-p(\theta | d, \hat{n}) & \propto p(d| \theta) p( \hat{n}| \theta) p(\theta) \\
-& \approx p(d| \theta) p_U(\hat{n}) p(\theta)  \\
-& \approx p(d| \theta) \mathcal{N}( \hat{n}-f(\theta) , C_U) p(\theta) \label{eq:DESI}.
+p(\theta | d, \hat{n}) & \propto p(d| \theta) p( \hat{n}| \theta) p^\text{DESI}_\text{prior}(\theta) \\
+& \approx p(d| \theta) p_U(\hat{n})  p^\text{DESI}_\text{prior}(\theta)  \\
+& \approx p(d| \theta) \mathcal{N}( \hat{n}-f(\theta) , C_U)  p^\text{DESI}_\text{prior}(\theta) \label{eq:DESI}.
 \end{align}
 The  likelihood
  term $ p( \hat{n}| \theta)$ is non-analytic and non-trivial to map
@@ -213,7 +214,17 @@ of the posterior, by an amount that I don't attempt to calculate in this note.
 Nevertheless, the posterior given in Equation~\ref{eq:correct} is related to the reported DESI result Equation~\ref{eq:DESI}
 by a shift from the red to blue contours in Figure~\ref{fig:posterior}, which would induce a slight shift away from $\Lambda$CDM
 and toward higher $\Omega_M$.
+The current DESI implementation in Cobaya can be changed by swapping
+\begin{equation}
+ \mathcal{N}( \hat{n}-f(\theta) , C_U) = -\frac{1}{2} (f(\Omega_m, w_0, w_a) - \hat{n})^T C_U^{-1} (f(\Omega_m, w_0, w_a) - \hat{n})
+\end{equation}
+with
+\begin{equation}
+ \frac{p_U(f(\theta))} {p^\text{Union3}_\text{prior}(\hat{n}) \sqrt{\det{J^TJ}}} =\frac{ -\frac{1}{2} f(\Omega_m, w_0, w_a) ^T C_U^{-1}  f(\Omega_m, w_0, w_a) }
+ {\mathcal{N}(\hat{n},1) \sqrt{\det{J^TJ}}}.
+\end{equation}
 It is eminently simpler and safer to treat the Union3 parameters and their posterior as such, and not as data.
+
 
 Caution should be exercised when multi-probe analyses favor regions far from the Union3 best fit  where the Hessian approximation of the
 posterior may be less secure, or in regions where $\sqrt{\det{J^TJ}}$ has structure.  For example, while the plotted contours in Figure~\ref{fig:priors}
@@ -237,7 +248,6 @@ in generating its parameter posterior.  Then they can properly incorporate Union
 
 Establishing a standard flexible model and prior though which all experiments can 
 summarize their results would facilitate proper usage by the community.
-
 
 \bibliographystyle{JHEP}
 \bibliography{apj-jour,ref}
