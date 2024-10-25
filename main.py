@@ -56,7 +56,7 @@ def pdf():
 
 	J_nodes = jax.jacfwd(nodes)
 
-	if False:
+	if True:
 		lnp_2 = numpy.load("lnp_2.npy")	
 		lnp_union = numpy.load("lnp_union.npy")
 		logomega = numpy.load("logomega.npy")		
@@ -82,7 +82,7 @@ def pdf():
 	print("lnp max ",max_value)
 	# one_68 = chi2.isf(1-.6826894921370888,3)
 	# one_68_full = chi2.isf(1-.6826894921370888,22)	
-	# local_max_index = numpy.where(lnp_union==max_value)
+	local_max_index = numpy.where(lnp_union==max_value)
 	# levels = zero_level*one_68_full/2 #+ max_value
 
 	levels = -chi2.isf([1-0.9545, 1-0.9167, 1-0.8427, 1-.6827],22)/2
@@ -91,7 +91,7 @@ def pdf():
 	print("lnp 2 max ",max_value2)
 	local_max_index2 = numpy.where(lnp_2==max_value2)
 
-	levels2 = zero_level*one_68_full/2 #+ max_value2
+	# levels2 = zero_level*one_68_full/2 #+ max_value2
 	levels2= levels
 
 	fig, axs = plt.subplots(3,3, figsize=(12,12))
