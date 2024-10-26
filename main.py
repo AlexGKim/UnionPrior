@@ -87,6 +87,8 @@ def pdf():
 
 	levels = -chi2.isf([1-0.9545, 1-0.9167, 1-0.8427, 1-.6827],22)/2
 
+	# levels = -chi2.isf([1-0.9626, 1-0.9167, 1-.6827],22)/2
+
 	max_value2 = lnp_2.max()
 	print("lnp 2 max ",max_value2)
 	local_max_index2 = numpy.where(lnp_2==max_value2)
@@ -100,11 +102,10 @@ def pdf():
 		CS = ax.contour(X, Y, lnp_union[Om0s_index,:,:], levels=levels, colors='red')
 
 		ax.clabel(CS, CS.levels, inline=True, fontsize=8)
-
 		# _holder = lnp_union[Om0s_index,:,:]+ logomega[Om0s_index,:,:]
 		# levels=zero_level+_holder.max()
 		CS2 = ax.contour(X, Y, lnp_2[Om0s_index,:,:], levels=levels2,colors='blue')
-		ax.clabel(CS2, CS2.levels, inline=True, fontsize=8)
+		ax.clabel(CS2, CS2.levels,  inline=True, fontsize=8)
 
 		# max_value = lnp_union[Om0s_index,:,:].max()
 		# get position index of this calue in your data array 
@@ -131,21 +132,27 @@ def pdf():
 
 		ax.set_xlabel(r"$w_0$")
 		ax.set_ylabel(r"$w_a$")
-		ax.scatter(desi[0],desi[1],label="DESI", color='green')
+		ax.scatter(desi[0],desi[1],label="DESI Best Fit", color='green')
 		ax.scatter(-1,0,label=r"$\Lambda$CDM",color='brown')
-		ax.legend()
+		if Om0s_index<6:
+			legend_loc=3
+		else:
+			legend_loc= 1
+		# levels=z
+		ax.legend(loc=legend_loc)
 		ax.set_title(r"$\Omega_M={:7.4f}$".format(Om0s[Om0s_index]))
 
 	fig.suptitle(r"$\ln{p}_U$ (red); $\ln{p}_F$ (blue)")
 	fig.tight_layout()
 	# fig.show()
 
+	fig.savefig('contour.pdf')
 	fig.savefig('contour.png')
 	# fig.show()
 
 
 
-	fig, axs = plt.subplots(3,3, figsize=(9,9))
+	fig, axs = plt.subplots(3,3, figsize=(12,12))
 	max_value = logomega.max()
 	local_max_index = numpy.where(logomega==max_value)
 	levels = zero_level+ max_value
@@ -156,18 +163,19 @@ def pdf():
 		ax.set_title(r"$\Omega_M={:7.5f}$".format(Om0s[Om0s_index]))
 		ax.set_xlabel(r"$w_0$")
 		ax.set_ylabel(r"$w_a$")
-		ax.scatter(desi[0],desi[1],label="DESI",color='green')
+		ax.scatter(desi[0],desi[1],label="DESI Best Fit",color='green')
 		# ax.scatter(-1,0,label=r"$\Lambda$CDM",color='brown')
 		# if local_max_index[0] == Om0s_index:
 		# 	max_x = X[local_max_index[1], local_max_index[2]]
 		# 	max_y = Y[local_max_index[1], local_max_index[2]]
 		# 	ax.scatter(max_x,max_y,label="Maximum",s=32,marker="*")
 		ax.legend()
-	fig.suptitle(r"$\ln{w}$")
+	# fig.suptitle(r"$\ln{w}$")
 	fig.tight_layout()
 
 	# plt.show()
-	fig.savefig('result.png')
+	fig.savefig('result.pdf')
+	fig.savefig('result.png')	
 
 	# plt.show()
 	numpy.save("lnp_2_new",lnp_2)	

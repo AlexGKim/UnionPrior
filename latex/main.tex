@@ -17,14 +17,14 @@
 %SetFonts
 
 
-\title{Union3 ``Binned''-Model Posterior}
+\title{Union3 ``Spline-Interpolated Distance Moduli'' Model}
 \author[a]{Alex Kim}
 \affiliation[a]{Lawrence Berkeley National Laboratory}
 \emailAdd{agkim@lbl.gov}
 %\date{}							% Activate to display a given date or no date
 
 \abstract{
-The Union3 ``Binned''-model posterior has been distributed for third-party cosmology analysis. The posterior prefers a large value of
+The Union3 ```Spline-Interpolated Distance Moduli'' model posterior has been distributed for third-party cosmology analysis. The posterior prefers a large value of
 $\Omega_M$, a small absolute value of $w_0$, and a negative $w_a$, but still accommodates  $\Lambda$CDM; the supernova data alone are not particularly constraining. 
 The posterior is calculated for
 a  prior that is not flat but rather has non-trivial structure in $\Omega_M$--$w_0$--$w_a$. 
@@ -48,10 +48,10 @@ Similar level discrepancies are found for the Pantheon+ \cite{2022ApJ...938..113
 %into its analyses incorrectly albeit in a subtle way;  it is of interest to explore how misapplication
 %of Union3 could affect  DESI $w_0$--$w_a$  fits.
 
-The Union3 ``Binned''\footnote{This name is poorly chosen: there is no binning in this model.} model is designed to compress the  supernova data for convenient use by the community.  
+The Union3 ``Spline-Interpolated Distance Moduli'' model is designed to compress the  supernova data for convenient use by the community.  
 The  model distance modulus
 is the sum of the distance modulus of $\Omega_M=0.3$  $\Lambda$CDM plus a second-order spline specified by node values
-at a fixed set of 22 redshifts.   Standard normal distributions are used as priors \footnote{Note the difference with the .}.  
+at a fixed set of 22 redshifts.   Standard normal distributions are used as priors.  
 The posterior of the nodes is provided  as values of
 $\mu = \mu_{\Lambda \text{CDM}}(z;\Omega_M=0.3) + n$ and the Hessian of the $n$ posterior,
 where $z$ are the fixed redshifts of the spline and $n$ the node values at the posterior maximum.
@@ -104,7 +104,7 @@ the constraining power to exclude standard cosmology.
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=5.5in]{../contour.png} 
+   \includegraphics[width=5.5in]{../contour.pdf} 
    \caption{Red: Contours of values of the Union3 posterior $\ln{p_U}+c$ for a
 set of $\Omega_M$--$w_0$--$w_a$ values, where $c= 11\ln{(2\pi)} + 0.5\ln({\det{C_U})}$.  The constant $c$ contains the
 normalization of the Normal distribution, so $\ln{p_U}+c$  is equivalent to  $-\chi^2/2$.   
@@ -136,7 +136,7 @@ where $J$ is the Jacobian matrix of $f$ and $J^TJ$ is the Gram matrix.
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=5.5in]{../result.png} 
+   \includegraphics[width=5.5in]{../result.pdf} 
    \caption{Surfaces of the Union3 prior, originally specified in terms of node parameters, transformed to the $w_0w_a$CDM parameterization
    $\ln{p^\text{Union3}_\text{prior}}(\Omega_M, w_0,w_a)$,  for a grid of values
  $w_0$--$w_a$ and $\Omega_M$.   
@@ -185,8 +185,9 @@ Consider independent data $d$ used to fit a model parameterized by $\theta$
 that predicts distance moduli at the ``Binned'' model redshifts as $n=f(\theta)$.
 The Union3 posterior can be used as a prior for $n$.  The posterior of the joint analysis is
 \begin{align}
-p(\theta|d) &\propto \int  p(d|n,\theta)p(\theta|n)p_U(n) dn\\
-&=  p(d|f(\theta),\theta) \frac{p_U(f(\theta))} {\sqrt{\det{J^TJ}}}, \label{eq:correct}
+p(\theta|d) &\propto \int  p(d|n,\theta)p(\theta|n)p_U(n) \frac{p_\text{prior}(n)}{p^\text{Union3}_\text{prior}(n)}dn\\
+&=  p(d|f(\theta),\theta) \frac{p_U(f(\theta))} {\sqrt{\det{J^TJ}}} \frac{p_\text{prior}(f(\theta))}{p^\text{Union3}_\text{prior}(f(\theta)}, 
+\label{eq:correct}
 \end{align}
 where $J$ is the Jacobian of $f$.
 Implicit in the above is the Union3 prior
@@ -214,7 +215,7 @@ of the posterior, by an amount that I don't attempt to calculate in this note.
 Nevertheless, the posterior given in Equation~\ref{eq:correct} is related to the reported DESI result Equation~\ref{eq:DESI}
 by a shift from the red to blue contours in Figure~\ref{fig:posterior}, which would induce a slight shift away from $\Lambda$CDM
 and toward higher $\Omega_M$.
-The current DESI implementation in Cobaya can be changed by swapping
+The current DESI implementation can be changed to the first approach by swapping
 \begin{equation}
  \mathcal{N}( \hat{n}-f(\theta) , C_U) = -\frac{1}{2} (f(\Omega_m, w_0, w_a) - \hat{n})^T C_U^{-1} (f(\Omega_m, w_0, w_a) - \hat{n})
 \end{equation}
