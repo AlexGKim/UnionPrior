@@ -126,8 +126,8 @@ def posterior():
 	fig.tight_layout()
 	# fig.show()
 
-	fig.savefig('posterior.pdf')
-	fig.savefig('posterior.png')
+	fig.savefig('likelihood.pdf')
+	fig.savefig('likelihood.png')
 
 posterior()
 wef
