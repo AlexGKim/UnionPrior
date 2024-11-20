@@ -1,6 +1,7 @@
-\documentclass[11pt,a4paper]{article}
-\pdfoutput=1
-\usepackage{jcappub}
+%\documentclass[11pt,a4paper]{article}
+\documentclass{aastex631}
+%\pdfoutput=1
+%\usepackage{jcappub}
 \usepackage{natbib}
 \usepackage{verbatim}
 
@@ -14,18 +15,15 @@
 								% TeX will automatically convert eps --> pdf in pdflatex		
 \usepackage{amssymb, amsmath}
 
-%SetFonts
-
-%SetFonts
-
+\begin{document}
 
 \title{Union3 ``Spline-Interpolated Distance Moduli'' Model}
-\author[a]{Alex Kim}
-\affiliation[a]{Lawrence Berkeley National Laboratory}
-\emailAdd{agkim@lbl.gov}
+\author[0000-0001-6315-8743]{Alex Kim}
+\affiliation{Lawrence Berkeley National Laboratory, Berkeley, CA 94720 USA}
+\email{agkim@lbl.gov}
 %\date{}							% Activate to display a given date or no date
 
-\abstract{
+\begin{abstract}
 The Union3 ```Spline-Interpolated Distance Moduli'' model posterior has been distributed for third-party cosmology analysis. The posterior prefers a large value of
 $\Omega_M$, a small absolute value of $w_0$, and a negative $w_a$, but still accommodates  $\Lambda$CDM; the supernova data alone are not strongly constraining.  The posterior is built assuming an underlying model and prior, both of which must be made to conform with any new model and prior being analyzed.
 The posterior is calculated for
@@ -34,10 +32,8 @@ the associated likelihood is slightly shifted relative to the posterior.
 The  posterior for a prior that is flat in $\Omega_M$--$w_0$--$w_a$ is also shifted relative to the original, but not
 at a level that is  statistically significant.    The misapplication of Union3 results in the  ``DESI2024 VI'' cosmology
 fits are inconsequential.
-}
+\end{abstract}
 
-\begin{document}
-\maketitle
 
 \section{Introduction}
 Supernova, BAO, and CMB data are used to fit cosmological and dark-energy parameters in the DESI cosmology
@@ -239,12 +235,14 @@ distribution model.
 
 To enable more accurate work, Union3 will provide a higher-order description of its posterior and full set of MCMC chains.
 
-\acknowledgments
+\begin{acknowledgments}
 I thank Kushal Lodha, William Matthewson, and Arman Shafieloo for discussions that inspired this work, 
 and Patrick McDonald for his invaluable insight into the DESI analysis.
 This work was supported by the U.S. Department of Energy (DOE), Office
 of Science, Office of High-Energy Physics, under Contract No. DE–AC02–05CH11231.
-\bibliographystyle{JHEP}
+\end{acknowledgments}
+
+\bibliographystyle{aasjournal}
 \bibliography{apj-jour,ref}
 
 
