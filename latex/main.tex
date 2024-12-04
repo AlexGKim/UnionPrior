@@ -24,7 +24,7 @@
 %\date{}							% Activate to display a given date or no date
 
 \begin{abstract}
-The Union3 ```Spline-Interpolated Distance Moduli'' model posterior has been distributed for third-party cosmology analysis. The posterior prefers a large value of
+The Union3 ``Spline-Interpolated Distance Moduli'' model posterior has been distributed for third-party cosmology analysis. The posterior prefers a large value of
 $\Omega_M$, a small absolute value of $w_0$, and a negative $w_a$, but still accommodates  $\Lambda$CDM; the supernova data alone are not strongly constraining.  The posterior is built assuming an underlying model and prior, both of which must be made to conform with any new model and prior being analyzed.
 The posterior is calculated for
 a  prior that is not flat but rather has non-trivial structure in $\Omega_M$--$w_0$--$w_a$;
@@ -41,7 +41,7 @@ analysis in the paper ``DESI2024 VI''  \citep{2024arXiv240403002D}.  The fit to 
 model at the 3.5$\sigma$ level for the combination of DESI+CMB with Union3  \cite{2023arXiv231112098R}.
 Similar level discrepancies are found for the Pantheon+ \cite{2022ApJ...938..113S} and the DES-SN5YR\footnote{Data available at \url{https://github.com/des-science/DES-SN5YR.}} supernova compilations.
 
-The Union3 ``Spline-Interpolated Distance Moduli'' model is designed to compress the  supernova data for convenient use by the community.  
+The Union3 ``Spline-Interpolated Distance Moduli'' model is designed to compress the  supernova data for convenient use by the community.\footnote{Union3 data and code are available at \url{https://github.com/rubind/union3_release}.}
 The  model distance modulus
 is the sum of the distance modulus of $\Omega_M=0.3$  $\Lambda$CDM plus a second-order spline specified by node values ($n$)
 at a fixed set of 22 redshifts. 
@@ -98,7 +98,7 @@ the constraining power to exclude standard cosmology.
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=5.5in]{../contour.pdf} 
+   \includegraphics[width=5.5in]{contour.pdf} 
    \caption{Contours of two different Union3 posteriors for the Spline-model parameters for a grid of values
  $w_0$--$w_a$ and $\Omega_M$.   
   Red: For the fiducial prior.  Contours of  $\ln{p_U}+c$, where $c$ is chosen such that $\ln{p_U}+c$  is equivalent to  $-\chi^2/2$. Contour levels are set to 68.27\%, 84.28\%, 91.67\%, and 95.55\% confidence intervals.
@@ -130,7 +130,7 @@ where $J$ is the Jacobian matrix of $f$ and $J^TJ$ is the Gram matrix.
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=5.5in]{../result.pdf} 
+   \includegraphics[width=5.5in]{result.pdf} 
    \caption{Surfaces of the Union3 prior, originally specified in terms of node parameters, transformed to the $w_0w_a$CDM parameterization
    $\ln{p^\text{Union3}_\text{prior}}(\Omega_M, w_0,w_a)$,  for a grid of values
  $w_0$--$w_a$ and $\Omega_M$.   
@@ -202,7 +202,7 @@ paper.
 
 \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
    \centering
-   \includegraphics[width=5.5in]{../likelihood.pdf} 
+   \includegraphics[width=5.5in]{likelihood.pdf} 
    \caption{Surfaces of the Union3 posterior $\ln{p_U}$ (red) and likelihood $\ln{\mathcal{L}_\text{Union3}}  = \ln{p_U}-\ln{p_\text{prior}^\text{Union3}}$ (blue).   The red curves
    and choice of contours levels are the same as in Fig.~\ref{fig:posterior}.\label{fig:likelihood}}
 \end{figure}
